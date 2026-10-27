@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Conflicting schema</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Acme Tools",
+    "url": "https://example.com"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Beta Corp",
+    "url": "https://example.com"
+  }
+  </script>
+</head>
+<body>
+  <h1>Conflicting schema</h1>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "id": "schema.jsonld.parse",
+      "status": "fail",
+      "summary": "JSON-LD block could not be parsed as JSON."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "A JSON-LD script was present but could not be parsed as JSON.",
+      "source": "fixture:malformed-jsonld/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "jsonld-parse"
+    }
+  ]
+}
