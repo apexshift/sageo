@@ -1,0 +1,14 @@
+{
+  "brand": "Acme Tools",
+  "candidates": [
+    {
+      "id": "cand-sponsored-mention",
+      "title": "Sponsored workshop gear picks",
+      "url": "https://example-blog.com/sponsored-tools",
+      "snippet": "Acme Tools appears in a sponsored roundup.",
+      "mentions_brand": true,
+      "paid_placement": true,
+      "spam_signals": []
+    }
+  ]
+}

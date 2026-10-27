@@ -1,0 +1,14 @@
+{
+  "brand": "Acme Tools",
+  "candidates": [
+    {
+      "id": "cand-paid-directory",
+      "title": "Submit your site — premium listing",
+      "url": "https://example-directory.com/submit",
+      "snippet": "Paid homepage placement for tool brands.",
+      "mentions_brand": false,
+      "paid_placement": true,
+      "spam_signals": ["paid-link"]
+    }
+  ]
+}

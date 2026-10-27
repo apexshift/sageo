@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "id": "citation.opportunity_found",
+      "status": "fail",
+      "summary": "No white-hat citation opportunities found in the corpus."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "No candidates for Acme Tools met white-hat opportunity criteria (brand mention, non-paid, no spam signals).",
+      "source": "fixture:thin-corpus/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "opportunity-corpus-heuristics"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "findings": [
+    {
+      "id": "citation.opportunity_found",
+      "status": "pass",
+      "summary": "Found 1 white-hat citation opportunity."
+    },
+    {
+      "id": "citation.white_hat",
+      "status": "pass",
+      "summary": "Identified opportunities exclude paid placements and spam signals."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Candidate 'cand-review-roundup' (Best workshop clamps 2026) mentions Acme Tools without paid/spam flags.",
+      "source": "fixture:happy/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "opportunity-corpus-heuristics"
+    },
+    {
+      "claim": "1 candidate(s) qualify as white-hat citation opportunities for Acme Tools.",
+      "source": "fixture:happy/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "opportunity-corpus-heuristics"
+    }
+  ]
+}

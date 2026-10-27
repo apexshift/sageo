@@ -1,0 +1,14 @@
+{
+  "brand": "Acme Tools",
+  "candidates": [
+    {
+      "id": "cand-review-roundup",
+      "title": "Best workshop clamps 2026",
+      "url": "https://example-reviews.com/clamps",
+      "snippet": "Independent roundup of workshop clamps including Acme Tools.",
+      "mentions_brand": true,
+      "paid_placement": false,
+      "spam_signals": []
+    }
+  ]
+}
