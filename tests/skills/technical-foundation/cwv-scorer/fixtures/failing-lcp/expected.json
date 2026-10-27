@@ -1,0 +1,42 @@
+{
+  "findings": [
+    {
+      "id": "cwv.lcp",
+      "status": "fail",
+      "summary": "LCP 4200ms exceeds the lab good threshold (≤2500ms)."
+    },
+    {
+      "id": "cwv.inp",
+      "status": "pass",
+      "summary": "INP 90ms is within the lab good threshold (≤200ms)."
+    },
+    {
+      "id": "cwv.cls",
+      "status": "pass",
+      "summary": "CLS 0.02 is within the lab good threshold (≤0.1)."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Lab LCP is 4200ms (good threshold ≤2500ms).",
+      "source": "fixture:failing-lcp/input/metrics.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "lab-metrics-threshold"
+    },
+    {
+      "claim": "Lab INP is 90ms (good threshold ≤200ms).",
+      "source": "fixture:failing-lcp/input/metrics.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "lab-metrics-threshold"
+    },
+    {
+      "claim": "Lab CLS is 0.02 (good threshold ≤0.1).",
+      "source": "fixture:failing-lcp/input/metrics.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "lab-metrics-threshold"
+    }
+  ]
+}

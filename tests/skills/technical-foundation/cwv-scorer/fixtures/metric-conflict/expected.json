@@ -1,0 +1,55 @@
+{
+  "findings": [
+    {
+      "id": "cwv.lcp",
+      "status": "pass",
+      "summary": "LCP 1800ms is within the lab good threshold (≤2500ms)."
+    },
+    {
+      "id": "cwv.inp",
+      "status": "pass",
+      "summary": "INP 110ms is within the lab good threshold (≤200ms)."
+    },
+    {
+      "id": "cwv.cls",
+      "status": "pass",
+      "summary": "CLS 0.04 is within the lab good threshold (≤0.1)."
+    },
+    {
+      "id": "cwv.metric_conflict",
+      "status": "fail",
+      "summary": "Primary and alternate lab metrics disagree on LCP pass/fail."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Lab LCP is 1800ms (good threshold ≤2500ms).",
+      "source": "fixture:metric-conflict/input/metrics.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "lab-metrics-threshold"
+    },
+    {
+      "claim": "Lab INP is 110ms (good threshold ≤200ms).",
+      "source": "fixture:metric-conflict/input/metrics.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "lab-metrics-threshold"
+    },
+    {
+      "claim": "Lab CLS is 0.04 (good threshold ≤0.1).",
+      "source": "fixture:metric-conflict/input/metrics.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "lab-metrics-threshold"
+    },
+    {
+      "claim": "Primary and alternate lab captures disagree on pass/fail for LCP.",
+      "source": "fixture:metric-conflict/input/metrics.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Two lab metric captures disagree on Core Web Vitals pass/fail for the same URL",
+      "method": "lab-metrics-threshold"
+    }
+  ]
+}

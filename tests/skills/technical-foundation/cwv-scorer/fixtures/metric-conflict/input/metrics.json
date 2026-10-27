@@ -1,0 +1,10 @@
+{
+  "lcp_ms": 1800,
+  "inp_ms": 110,
+  "cls": 0.04,
+  "alternate": {
+    "lcp_ms": 3100,
+    "inp_ms": 110,
+    "cls": 0.04
+  }
+}
