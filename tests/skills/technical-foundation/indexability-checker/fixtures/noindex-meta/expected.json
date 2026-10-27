@@ -1,0 +1,42 @@
+{
+  "findings": [
+    {
+      "id": "indexability.status",
+      "status": "pass",
+      "summary": "HTTP status 200 is eligible for indexing."
+    },
+    {
+      "id": "indexability.x_robots_tag",
+      "status": "pass",
+      "summary": "No X-Robots-Tag noindex/none directive observed."
+    },
+    {
+      "id": "indexability.robots_meta",
+      "status": "fail",
+      "summary": "Robots meta includes noindex or none."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "HTTP response status is 200.",
+      "source": "fixture:noindex-meta/input/response.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "headers-html-parse"
+    },
+    {
+      "claim": "X-Robots-Tag header does not include noindex or none.",
+      "source": "fixture:noindex-meta/input/response.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "headers-html-parse"
+    },
+    {
+      "claim": "Robots meta content is 'noindex, nofollow' and blocks indexing.",
+      "source": "fixture:noindex-meta/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "headers-html-parse"
+    }
+  ]
+}

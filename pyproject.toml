@@ -25,3 +25,5 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+# Unique basenames under tests/skills/<pillar>/<name>/test_golden.py
+addopts = ["--import-mode=importlib"]
