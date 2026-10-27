@@ -1,0 +1,54 @@
+{
+  "findings": [
+    {
+      "id": "local_schema.present",
+      "status": "pass",
+      "summary": "Found LocalBusiness structured data on the page."
+    },
+    {
+      "id": "local_schema.name",
+      "status": "pass",
+      "summary": "LocalBusiness name is present."
+    },
+    {
+      "id": "local_schema.address",
+      "status": "fail",
+      "summary": "LocalBusiness address is missing streetAddress or addressLocality."
+    },
+    {
+      "id": "local_schema.telephone",
+      "status": "pass",
+      "summary": "LocalBusiness telephone is present."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page includes JSON-LD with @type LocalBusiness.",
+      "source": "fixture:missing-address/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    },
+    {
+      "claim": "LocalBusiness name is 'Acme Plumbing'.",
+      "source": "fixture:missing-address/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    },
+    {
+      "claim": "LocalBusiness address lacks streetAddress and/or addressLocality.",
+      "source": "fixture:missing-address/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    },
+    {
+      "claim": "LocalBusiness telephone is '+1-555-0100'.",
+      "source": "fixture:missing-address/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    }
+  ]
+}
