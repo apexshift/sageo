@@ -1,0 +1,30 @@
+{
+  "findings": [
+    {
+      "id": "citation.nap_consistent",
+      "status": "fail",
+      "summary": "NAP consistency failed across directory listings."
+    },
+    {
+      "id": "citation.listing_incomplete",
+      "status": "fail",
+      "summary": "Some listings are missing NAP fields needed for comparison."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "No listings fully matched the canonical NAP for Acme Plumbing.",
+      "source": "fixture:incomplete-listing/input/listings.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "listings-nap-heuristics"
+    },
+    {
+      "claim": "Listing 'listing-partial' (apple-maps) is missing one or more NAP fields.",
+      "source": "fixture:incomplete-listing/input/listings.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "listings-nap-heuristics"
+    }
+  ]
+}

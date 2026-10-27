@@ -1,0 +1,17 @@
+{
+  "canonical": {
+    "name": "Acme Plumbing",
+    "streetAddress": "123 Main St",
+    "addressLocality": "Springfield",
+    "telephone": "+1-555-0100"
+  },
+  "listings": [
+    {
+      "id": "listing-partial",
+      "directory": "apple-maps",
+      "name": "Acme Plumbing",
+      "streetAddress": "123 Main St",
+      "addressLocality": "Springfield"
+    }
+  ]
+}
