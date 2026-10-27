@@ -1,0 +1,55 @@
+{
+  "findings": [
+    {
+      "id": "indexability.status",
+      "status": "pass",
+      "summary": "HTTP status 200 is eligible for indexing."
+    },
+    {
+      "id": "indexability.x_robots_tag",
+      "status": "pass",
+      "summary": "X-Robots-Tag allows indexing (index, follow)."
+    },
+    {
+      "id": "indexability.robots_meta",
+      "status": "fail",
+      "summary": "Robots meta includes noindex or none."
+    },
+    {
+      "id": "indexability.signal_conflict",
+      "status": "fail",
+      "summary": "X-Robots-Tag and robots meta disagree on indexability."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "HTTP response status is 200.",
+      "source": "fixture:signal-conflict/input/response.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "headers-html-parse"
+    },
+    {
+      "claim": "X-Robots-Tag content is 'index, follow' and allows indexing.",
+      "source": "fixture:signal-conflict/input/response.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "headers-html-parse"
+    },
+    {
+      "claim": "Robots meta content is 'noindex' and blocks indexing.",
+      "source": "fixture:signal-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "headers-html-parse"
+    },
+    {
+      "claim": "X-Robots-Tag allows indexing while robots meta blocks indexing.",
+      "source": "fixture:signal-conflict/input",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Header and meta robots directives disagree on whether the URL may be indexed",
+      "method": "headers-html-parse"
+    }
+  ]
+}
