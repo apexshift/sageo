@@ -1,0 +1,42 @@
+{
+  "findings": [
+    {
+      "id": "extractability.h1",
+      "status": "pass",
+      "summary": "Page has a single clear H1."
+    },
+    {
+      "id": "extractability.lead",
+      "status": "pass",
+      "summary": "First paragraph is a short answer-first lead (≤40 words)."
+    },
+    {
+      "id": "extractability.structure",
+      "status": "fail",
+      "summary": "Page lacks list, definition list, or question-style H2 structure."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page has exactly one H1: 'Router tips'.",
+      "source": "fixture:weak-structure/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "html-extractability-parse"
+    },
+    {
+      "claim": "First paragraph has 11 words and is within the answer-first lead limit (≤40 words).",
+      "source": "fixture:weak-structure/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "html-extractability-parse"
+    },
+    {
+      "claim": "No extractable list (≥2 items), definition list, or question-style H2 headings were observed.",
+      "source": "fixture:weak-structure/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "html-extractability-parse"
+    }
+  ]
+}
