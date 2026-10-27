@@ -1,0 +1,14 @@
+{
+  "brand": "Acme Tools",
+  "candidates": [
+    {
+      "id": "cand-unrelated",
+      "title": "General workshop tips",
+      "url": "https://example-blog.com/workshop-tips",
+      "snippet": "Tips for organising a small workshop.",
+      "mentions_brand": false,
+      "sentiment": "neutral",
+      "risk_signals": []
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "brand": "Acme Tools",
+  "candidates": [
+    {
+      "id": "cand-mixed-mention",
+      "title": "Mixed reactions to Acme Tools launch",
+      "url": "https://example-news.com/acme-launch",
+      "snippet": "Some praise Acme Tools while others raise durability concerns.",
+      "mentions_brand": true,
+      "sentiment": "mixed",
+      "risk_signals": ["reputation_concern"]
+    }
+  ]
+}
