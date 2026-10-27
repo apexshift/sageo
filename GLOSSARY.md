@@ -60,6 +60,10 @@ _Avoid_: treating the git repo history as the run log
 A hard stop that requires human approval before any live-site change or before a remediation plan is finalised.
 _Avoid_: soft warning, optional review
 
+**Cost model**:
+How an Agent declares expected spend in `AGENT.md` metadata: `tokens_and_connector_calls` | `tokens_only` | `manual_estimate`. Body Cost section documents drivers and labelled estimates — no fake precision.
+_Avoid_: guaranteed dollar figures, inventing connector-call counts
+
 **Connector**:
 A read-only (through P5) MCP server pack that exposes a third-party data system (GSC, GA4, or a crawl/SERP class) to Skills. Credentials via environment variables only.
 _Avoid_: Skill (when you mean a Connector), embedding vendor SDKs inside Skills
