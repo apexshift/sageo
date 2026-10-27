@@ -1,0 +1,43 @@
+{
+  "findings": [
+    {
+      "id": "schema.jsonld.valid",
+      "status": "pass",
+      "summary": "Found 1 valid JSON-LD block with @type Organization."
+    },
+    {
+      "id": "schema.jsonld.valid",
+      "status": "pass",
+      "summary": "Found 1 valid JSON-LD block with @type Organization."
+    },
+    {
+      "id": "schema.jsonld.contradiction",
+      "status": "fail",
+      "summary": "Conflicting Organization name values across JSON-LD blocks."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page includes valid JSON-LD structured data with @type Organization.",
+      "source": "fixture:contradictory-types/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "jsonld-parse"
+    },
+    {
+      "claim": "Page includes valid JSON-LD structured data with @type Organization.",
+      "source": "fixture:contradictory-types/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "jsonld-parse"
+    },
+    {
+      "claim": "JSON-LD Organization blocks disagree on name (Acme Tools vs Beta Corp).",
+      "source": "fixture:contradictory-types/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Contradictory Organization name values across JSON-LD blocks",
+      "method": "jsonld-parse"
+    }
+  ]
+}

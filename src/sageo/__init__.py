@@ -1,6 +1,6 @@
 """SageO shared Python package.
 
-Contract lint and other shared helpers land here in later P1 tickets.
+Includes Skill package contract lint (`sageo.contract_lint`).
 """
 
 __version__ = "0.1.0"
