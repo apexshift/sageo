@@ -1,0 +1,31 @@
+{
+  "findings": [
+    {
+      "id": "citation.opportunity_found",
+      "status": "fail",
+      "summary": "No white-hat citation opportunities found in the corpus."
+    },
+    {
+      "id": "citation.signal_conflict",
+      "status": "fail",
+      "summary": "Some candidates mix opportunity cues with paid/spam risk signals."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "No candidates for Acme Tools met white-hat opportunity criteria (brand mention, non-paid, no spam signals).",
+      "source": "fixture:signal-conflict/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "opportunity-corpus-heuristics"
+    },
+    {
+      "claim": "Candidate 'cand-sponsored-mention' (Sponsored workshop gear picks) has conflicting white-hat and risk signals.",
+      "source": "fixture:signal-conflict/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Candidate shows brand/topical opportunity cues alongside paid placement or spam signals",
+      "method": "opportunity-corpus-heuristics"
+    }
+  ]
+}
