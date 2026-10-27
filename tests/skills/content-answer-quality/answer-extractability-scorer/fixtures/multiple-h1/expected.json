@@ -1,0 +1,55 @@
+{
+  "findings": [
+    {
+      "id": "extractability.h1",
+      "status": "fail",
+      "summary": "Page has 2 H1 headings; answer topic is ambiguous."
+    },
+    {
+      "id": "extractability.signal_conflict",
+      "status": "fail",
+      "summary": "Multiple H1 headings conflict on the primary answer topic."
+    },
+    {
+      "id": "extractability.lead",
+      "status": "pass",
+      "summary": "First paragraph is a short answer-first lead (≤40 words)."
+    },
+    {
+      "id": "extractability.structure",
+      "status": "pass",
+      "summary": "Page includes extractable list or Q&A structure."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page has 2 H1 elements: 'How to reset a router' vs 'How to extend Wi-Fi range'.",
+      "source": "fixture:multiple-h1/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "html-extractability-parse"
+    },
+    {
+      "claim": "Multiple H1 headings disagree on the primary extractable topic.",
+      "source": "fixture:multiple-h1/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "More than one H1 makes the primary answer topic ambiguous for extraction",
+      "method": "html-extractability-parse"
+    },
+    {
+      "claim": "First paragraph has 13 words and is within the answer-first lead limit (≤40 words).",
+      "source": "fixture:multiple-h1/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "html-extractability-parse"
+    },
+    {
+      "claim": "Page includes an ordered or unordered list with at least 2 items.",
+      "source": "fixture:multiple-h1/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "html-extractability-parse"
+    }
+  ]
+}
