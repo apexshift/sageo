@@ -1,0 +1,42 @@
+{
+  "findings": [
+    {
+      "id": "intent.query",
+      "status": "pass",
+      "summary": "Query classified as informational."
+    },
+    {
+      "id": "intent.page",
+      "status": "pass",
+      "summary": "Page classified as informational."
+    },
+    {
+      "id": "intent.match",
+      "status": "pass",
+      "summary": "Query and page intents match (informational)."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Query 'how to reset a router' matches informational cues.",
+      "source": "fixture:happy/input/query.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "query-page-intent-heuristics"
+    },
+    {
+      "claim": "Page title/H1 match informational cues (how-to / guide style).",
+      "source": "fixture:happy/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "query-page-intent-heuristics"
+    },
+    {
+      "claim": "Query intent informational matches page intent informational.",
+      "source": "fixture:happy/input",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "query-page-intent-heuristics"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "findings": [
+    {
+      "id": "intent.query",
+      "status": "pass",
+      "summary": "Query classified as transactional."
+    },
+    {
+      "id": "intent.page",
+      "status": "pass",
+      "summary": "Page classified as informational."
+    },
+    {
+      "id": "intent.match",
+      "status": "fail",
+      "summary": "Query intent (transactional) does not match page intent (informational)."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Query 'buy wireless router' matches transactional cues.",
+      "source": "fixture:mismatch/input/query.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "query-page-intent-heuristics"
+    },
+    {
+      "claim": "Page title/H1 match informational cues (how-to / guide style).",
+      "source": "fixture:mismatch/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "query-page-intent-heuristics"
+    },
+    {
+      "claim": "Query intent transactional does not match page intent informational.",
+      "source": "fixture:mismatch/input",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "query-page-intent-heuristics"
+    }
+  ]
+}

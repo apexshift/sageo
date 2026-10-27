@@ -1,0 +1,44 @@
+{
+  "findings": [
+    {
+      "id": "intent.query",
+      "status": "fail",
+      "summary": "Query intent is ambiguous across informational, transactional."
+    },
+    {
+      "id": "intent.ambiguous",
+      "status": "fail",
+      "summary": "Query intent signals conflict and need human verification."
+    },
+    {
+      "id": "intent.page",
+      "status": "pass",
+      "summary": "Page classified as informational."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Query 'how to buy a router' matched multiple intent cue sets: informational, transactional.",
+      "source": "fixture:ambiguous-query/input/query.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Query matches more than one intent class under hermetic heuristics",
+      "method": "query-page-intent-heuristics"
+    },
+    {
+      "claim": "Ambiguous query intent classes: informational, transactional.",
+      "source": "fixture:ambiguous-query/input/query.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Conflicting query intent cues make a single class unreliable",
+      "method": "query-page-intent-heuristics"
+    },
+    {
+      "claim": "Page title/H1 match informational cues (how-to / guide style).",
+      "source": "fixture:ambiguous-query/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "query-page-intent-heuristics"
+    }
+  ]
+}
