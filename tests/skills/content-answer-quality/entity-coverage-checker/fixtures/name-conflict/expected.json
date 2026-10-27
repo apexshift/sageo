@@ -1,0 +1,55 @@
+{
+  "findings": [
+    {
+      "id": "entity.schema_present",
+      "status": "pass",
+      "summary": "Page includes a named schema.org entity."
+    },
+    {
+      "id": "entity.same_as",
+      "status": "pass",
+      "summary": "Primary entity includes sameAs identity links."
+    },
+    {
+      "id": "entity.visible_mention",
+      "status": "pass",
+      "summary": "Entity name appears in visible page text."
+    },
+    {
+      "id": "entity.name_conflict",
+      "status": "fail",
+      "summary": "Conflicting entity name values across schema blocks."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page includes schema entity @type Organization named 'Acme Tools'.",
+      "source": "fixture:name-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    },
+    {
+      "claim": "Organization 'Acme Tools' declares 1 sameAs identity link(s).",
+      "source": "fixture:name-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    },
+    {
+      "claim": "Entity name 'Acme Tools' appears in visible page text.",
+      "source": "fixture:name-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    },
+    {
+      "claim": "Schema entities disagree on name (Acme Tools vs Acme Tools LLC).",
+      "source": "fixture:name-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Contradictory entity name values across JSON-LD blocks",
+      "method": "entity-html-parse"
+    }
+  ]
+}

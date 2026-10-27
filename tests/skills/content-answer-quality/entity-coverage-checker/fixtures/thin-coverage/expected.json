@@ -1,0 +1,42 @@
+{
+  "findings": [
+    {
+      "id": "entity.schema_present",
+      "status": "pass",
+      "summary": "Page includes a named schema.org entity."
+    },
+    {
+      "id": "entity.same_as",
+      "status": "fail",
+      "summary": "Primary entity is missing sameAs identity links."
+    },
+    {
+      "id": "entity.visible_mention",
+      "status": "fail",
+      "summary": "Entity name does not appear in visible page text."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page includes schema entity @type Organization named 'Acme Tools'.",
+      "source": "fixture:thin-coverage/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    },
+    {
+      "claim": "Organization 'Acme Tools' has no sameAs identity links.",
+      "source": "fixture:thin-coverage/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    },
+    {
+      "claim": "Entity name 'Acme Tools' was not observed in visible page text.",
+      "source": "fixture:thin-coverage/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    }
+  ]
+}

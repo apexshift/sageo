@@ -1,0 +1,42 @@
+{
+  "findings": [
+    {
+      "id": "entity.schema_present",
+      "status": "pass",
+      "summary": "Page includes a named schema.org entity."
+    },
+    {
+      "id": "entity.same_as",
+      "status": "pass",
+      "summary": "Primary entity includes sameAs identity links."
+    },
+    {
+      "id": "entity.visible_mention",
+      "status": "pass",
+      "summary": "Entity name appears in visible page text."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page includes schema entity @type Organization named 'Acme Tools'.",
+      "source": "fixture:happy/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    },
+    {
+      "claim": "Organization 'Acme Tools' declares 2 sameAs identity link(s).",
+      "source": "fixture:happy/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    },
+    {
+      "claim": "Entity name 'Acme Tools' appears in visible page text.",
+      "source": "fixture:happy/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "entity-html-parse"
+    }
+  ]
+}
