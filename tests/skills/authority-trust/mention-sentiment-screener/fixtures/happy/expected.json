@@ -1,0 +1,30 @@
+{
+  "findings": [
+    {
+      "id": "mention.sentiment_ok",
+      "status": "pass",
+      "summary": "Found 1 clear positive/neutral brand mention."
+    },
+    {
+      "id": "mention.low_risk",
+      "status": "pass",
+      "summary": "Screened mentions show no declared risk signals."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Candidate 'cand-positive-review' (Acme Tools clamps earn praise) mentions Acme Tools with positive sentiment and no risk signals.",
+      "source": "fixture:happy/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "mention-sentiment-heuristics"
+    },
+    {
+      "claim": "1 candidate(s) cleared sentiment/risk screening for Acme Tools.",
+      "source": "fixture:happy/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "mention-sentiment-heuristics"
+    }
+  ]
+}

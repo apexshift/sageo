@@ -1,0 +1,31 @@
+{
+  "findings": [
+    {
+      "id": "mention.sentiment_ok",
+      "status": "fail",
+      "summary": "No clear positive/neutral brand mentions found in the corpus."
+    },
+    {
+      "id": "mention.signal_conflict",
+      "status": "fail",
+      "summary": "Some mentions mix sentiment cues with risk signals or are marked mixed."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "No candidates for Acme Tools met clear sentiment screening criteria (brand mention with positive/neutral sentiment and no risk signals).",
+      "source": "fixture:signal-conflict/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "mention-sentiment-heuristics"
+    },
+    {
+      "claim": "Candidate 'cand-mixed-mention' (Mixed reactions to Acme Tools launch) has conflicting sentiment/risk signals.",
+      "source": "fixture:signal-conflict/input/corpus.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Mention shows mixed sentiment or combines safe sentiment cues with risk signals",
+      "method": "mention-sentiment-heuristics"
+    }
+  ]
+}

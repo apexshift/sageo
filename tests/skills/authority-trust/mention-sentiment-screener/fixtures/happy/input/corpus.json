@@ -1,0 +1,14 @@
+{
+  "brand": "Acme Tools",
+  "candidates": [
+    {
+      "id": "cand-positive-review",
+      "title": "Acme Tools clamps earn praise",
+      "url": "https://example-reviews.com/acme-clamps",
+      "snippet": "Acme Tools delivered reliable clamps in our workshop test.",
+      "mentions_brand": true,
+      "sentiment": "positive",
+      "risk_signals": []
+    }
+  ]
+}

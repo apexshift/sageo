@@ -1,0 +1,14 @@
+{
+  "brand": "Acme Tools",
+  "candidates": [
+    {
+      "id": "cand-negative-review",
+      "title": "Acme Tools clamps fail durability test",
+      "url": "https://example-reviews.com/acme-fail",
+      "snippet": "Acme Tools clamps cracked under load in our durability test.",
+      "mentions_brand": true,
+      "sentiment": "negative",
+      "risk_signals": ["product_quality"]
+    }
+  ]
+}
