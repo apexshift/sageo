@@ -1,0 +1,67 @@
+{
+  "findings": [
+    {
+      "id": "local_schema.present",
+      "status": "pass",
+      "summary": "Found LocalBusiness structured data on the page."
+    },
+    {
+      "id": "local_schema.name",
+      "status": "pass",
+      "summary": "LocalBusiness name is present."
+    },
+    {
+      "id": "local_schema.address",
+      "status": "pass",
+      "summary": "LocalBusiness address includes streetAddress and addressLocality."
+    },
+    {
+      "id": "local_schema.telephone",
+      "status": "pass",
+      "summary": "LocalBusiness telephone is present."
+    },
+    {
+      "id": "local_schema.nap_conflict",
+      "status": "fail",
+      "summary": "Conflicting LocalBusiness name, telephone, or address values."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Page includes JSON-LD with @type LocalBusiness.",
+      "source": "fixture:nap-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    },
+    {
+      "claim": "LocalBusiness name is 'Acme Plumbing'.",
+      "source": "fixture:nap-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    },
+    {
+      "claim": "LocalBusiness address includes streetAddress '123 Main St' and addressLocality 'Springfield'.",
+      "source": "fixture:nap-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    },
+    {
+      "claim": "LocalBusiness telephone is '+1-555-0100'.",
+      "source": "fixture:nap-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "local-jsonld-parse"
+    },
+    {
+      "claim": "LocalBusiness blocks disagree on name (Acme Plumbing vs Acme Plumbing LLC).",
+      "source": "fixture:nap-conflict/input/page.html",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Contradictory LocalBusiness NAP fields across JSON-LD blocks",
+      "method": "local-jsonld-parse"
+    }
+  ]
+}
