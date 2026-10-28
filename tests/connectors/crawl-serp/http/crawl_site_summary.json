@@ -1,0 +1,40 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://api.dataforseo.com/v3/on_page/summary/task-abc-123",
+    "headers": {
+      "Authorization": "Basic bG9naW46cGFzc3dvcmQ="
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "tasks": [
+        {
+          "id": "task-abc-123",
+          "result": [
+            {
+              "crawl_progress": "finished",
+              "crawl_status": {
+                "pages_crawled": 10,
+                "pages_in_queue": 0
+              },
+              "domain_info": {
+                "name": "example.com",
+                "ssl_info": {"valid_certificate": true}
+              },
+              "page_metrics": {
+                "links_external": 5,
+                "broken_links": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

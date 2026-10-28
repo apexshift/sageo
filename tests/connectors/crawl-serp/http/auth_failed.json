@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.dataforseo.com/v3/on_page/task_post",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic aW52YWxpZDppbnZhbGlk"
+    },
+    "body": [
+      {
+        "target": "example.com",
+        "max_crawl_pages": 10
+      }
+    ]
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "error": {
+        "code": 401,
+        "message": "Unauthorized"
+      }
+    }
+  }
+}
