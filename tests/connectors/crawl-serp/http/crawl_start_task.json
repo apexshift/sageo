@@ -1,0 +1,32 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.dataforseo.com/v3/on_page/task_post",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic bG9naW46cGFzc3dvcmQ="
+    },
+    "body": [
+      {
+        "target": "example.com",
+        "max_crawl_pages": 10,
+        "start_url": "https://example.com/"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "tasks": [
+        {
+          "id": "task-abc-123",
+          "status_code": 20100,
+          "status_message": "Task Created."
+        }
+      ]
+    }
+  }
+}
