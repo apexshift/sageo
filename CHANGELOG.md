@@ -19,13 +19,15 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 
 ## [Unreleased]
 
-Work landed on `main` toward the first public product tag (`v0.1.0`). Included
-component versions: see tree `metadata.version` (typically starting at
-`0.1.0`).
+## [0.1.0] - 2026-10-28
+
+First public product release (`v0.1.0`). Included component versions: see tree
+`metadata.version` (typically starting at `0.1.0`; independent of the product
+tag).
 
 ### Added
 
-#### P5 — Quality, metrics & packaging (in progress)
+#### P5 — Quality, metrics & packaging
 
 - Shared metrics helper (`sageo.metrics`) for Run cost estimates and Evidence
   completeness.
