@@ -1,0 +1,30 @@
+{
+  "issues": [
+    {
+      "id": "cwv.lcp",
+      "summary": "LCP exceeds lab good threshold.",
+      "severity": 3,
+      "impact": 4
+    },
+    {
+      "id": "crawl.client_error",
+      "summary": "HTTP 4xx client errors in crawl log.",
+      "severity": 5,
+      "impact": 5
+    }
+  ],
+  "alternate_issues": [
+    {
+      "id": "cwv.lcp",
+      "summary": "LCP exceeds lab good threshold.",
+      "severity": 2,
+      "impact": 2
+    },
+    {
+      "id": "crawl.client_error",
+      "summary": "HTTP 4xx client errors in crawl log.",
+      "severity": 5,
+      "impact": 5
+    }
+  ]
+}

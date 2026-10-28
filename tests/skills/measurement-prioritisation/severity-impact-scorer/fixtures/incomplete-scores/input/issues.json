@@ -1,0 +1,21 @@
+{
+  "issues": [
+    {
+      "id": "cwv.lcp",
+      "summary": "LCP exceeds lab good threshold.",
+      "severity": 3,
+      "impact": 4
+    },
+    {
+      "id": "crawl.client_error",
+      "summary": "HTTP 4xx client errors in crawl log.",
+      "severity": 5
+    },
+    {
+      "id": "schema.missing_type",
+      "summary": "Page missing schema.org type.",
+      "severity": 0,
+      "impact": 2
+    }
+  ]
+}

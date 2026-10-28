@@ -1,0 +1,37 @@
+{
+  "findings": [
+    {
+      "id": "priority.scored",
+      "status": "fail",
+      "summary": "Severity × impact scoring failed for one or more issues."
+    },
+    {
+      "id": "priority.incomplete",
+      "status": "fail",
+      "summary": "2 issue(s) are missing or have invalid severity/impact (require integers 1–5)."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Issue 'cwv.lcp' score is 12 (severity 3 × impact 4).",
+      "source": "fixture:incomplete-scores/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Issue 'crawl.client_error' is missing a valid impact (require integers 1–5).",
+      "source": "fixture:incomplete-scores/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Issue 'schema.missing_type' is missing a valid severity (require integers 1–5).",
+      "source": "fixture:incomplete-scores/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    }
+  ]
+}
