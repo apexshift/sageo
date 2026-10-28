@@ -1,0 +1,102 @@
+{
+  "findings": [
+    {
+      "id": "gbp.name",
+      "status": "pass",
+      "summary": "GBP business name is present."
+    },
+    {
+      "id": "gbp.address",
+      "status": "pass",
+      "summary": "GBP address includes streetAddress and addressLocality."
+    },
+    {
+      "id": "gbp.telephone",
+      "status": "pass",
+      "summary": "GBP telephone is present."
+    },
+    {
+      "id": "gbp.website",
+      "status": "fail",
+      "summary": "GBP website URL is missing."
+    },
+    {
+      "id": "gbp.category",
+      "status": "pass",
+      "summary": "GBP primary category is present."
+    },
+    {
+      "id": "gbp.hours",
+      "status": "fail",
+      "summary": "GBP regular hours are missing."
+    },
+    {
+      "id": "gbp.description",
+      "status": "fail",
+      "summary": "GBP description is below the minimum length (≥50 characters)."
+    },
+    {
+      "id": "gbp.photos",
+      "status": "fail",
+      "summary": "GBP photo count is below the minimum (≥3)."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "GBP business name is 'Acme Plumbing'.",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP address includes streetAddress '123 Main St' and addressLocality 'Springfield'.",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP telephone is '+1-555-0100'.",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP website URL is missing from the profile fixture.",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP primary category is 'Plumber'.",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP regular hours are missing from the profile fixture.",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP description length is 10 characters (minimum ≥50).",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP photo count is 1 (minimum ≥3).",
+      "source": "fixture:incomplete-profile/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    }
+  ]
+}

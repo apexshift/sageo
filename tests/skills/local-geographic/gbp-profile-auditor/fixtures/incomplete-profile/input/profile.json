@@ -1,0 +1,11 @@
+{
+  "name": "Acme Plumbing",
+  "streetAddress": "123 Main St",
+  "addressLocality": "Springfield",
+  "telephone": "+1-555-0100",
+  "website": "",
+  "primaryCategory": "Plumber",
+  "description": "Short bio.",
+  "hours": {},
+  "photoCount": 1
+}
