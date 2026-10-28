@@ -390,10 +390,54 @@ def _execute_from(
         if agent.execute is not None:
             outcome = agent.execute(ctx)
         ev_ids = list(outcome.get("evidence_ids") or [])
-        evidence_refs.extend(ev_ids)
-        statuses.append(
-            {"name": name, "status": str(outcome.get("status") or "completed")}
-        )
+        for evidence_id in ev_ids:
+            if evidence_id not in evidence_refs:
+                evidence_refs.append(str(evidence_id))
+        status = str(outcome.get("status") or "completed")
+        statuses.append({"name": name, "status": status})
+
+        if status == "awaiting_human_review":
+            _append_decision(
+                decision_log_path,
+                {
+                    "decision_id": f"{run_id}-gate-stop-{name}",
+                    "actor": "orchestrator",
+                    "timestamp": observed_at,
+                    "kind": "gate",
+                    "inputs": {"agent": name, "source": "agent_execute_status"},
+                    "skills": [],
+                    "agents": [name],
+                    "outcome": "awaiting_approval",
+                    "evidence_ids": list(evidence_refs),
+                    "human_review": "awaiting_approval",
+                    "rationale": (
+                        "Agent execute returned awaiting_human_review; "
+                        "Orchestrator owns the stop until Decision log approval"
+                    ),
+                },
+            )
+            _write_state(
+                run_dir,
+                {
+                    "request": _request_dict(request),
+                    "schedule": list(ordered_names),
+                    "next_index": idx,
+                    "paused_agent": name,
+                    "gate_state": "awaiting_approval",
+                    "agent_statuses": statuses,
+                    "evidence_refs": evidence_refs,
+                },
+            )
+            return RunResult(
+                run_id=run_id,
+                agent_statuses=statuses,
+                evidence_refs=evidence_refs,
+                gate_state="awaiting_approval",
+                decision_log_path=decision_log_path,
+                run_dir=run_dir,
+                evidence=evidence,
+            )
+
         gate_approved_for = None
         idx += 1
 

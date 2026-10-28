@@ -124,6 +124,86 @@ def test_resume_with_approval_continues_past_gate(tmp_path: Path) -> None:
     assert log.index("awaiting_approval") < log.index("approved")
 
 
+def test_execute_awaiting_human_review_pauses_after_agent_runs(
+    tmp_path: Path,
+) -> None:
+    """Agent-declared gates surface as execute status; Orchestrator still stops."""
+    calls: list[str] = []
+    agents = [
+        AgentSpec(
+            name="packager",
+            primary_outcome="SEO",
+            when_to_use=frozenset({"package"}),
+            human_review_gate="not_required",
+            execute=lambda _c: (
+                calls.append("packager")
+                or {
+                    "evidence_ids": ["ev-pack"],
+                    "status": "awaiting_human_review",
+                }
+            ),
+        ),
+        AgentSpec(
+            name="follow-up",
+            primary_outcome="SEO",
+            when_to_use=frozenset({"package"}),
+            human_review_gate="not_required",
+            execute=lambda _c: (
+                calls.append("follow-up")
+                or {"evidence_ids": ["ev-follow"], "status": "completed"}
+            ),
+        ),
+    ]
+
+    paused = run(
+        RunRequest(
+            goal="Package",
+            intent="package",
+            primary_outcome="SEO",
+            property_refs={"site": "https://example.com/"},
+        ),
+        agents,
+        runs_root=tmp_path,
+        observed_at="2026-10-28T12:00:00+00:00",
+        run_id="run-agent-gate",
+    )
+
+    assert calls == ["packager"]
+    assert paused.gate_state == "awaiting_approval"
+    assert paused.evidence_refs == ["ev-pack"]
+    assert paused.agent_statuses == [
+        {"name": "packager", "status": "awaiting_human_review"},
+    ]
+
+    resumed = resume(
+        "run-agent-gate",
+        [
+            AgentSpec(
+                name="packager",
+                primary_outcome="SEO",
+                when_to_use=frozenset({"package"}),
+                human_review_gate="not_required",
+                execute=lambda _c: (
+                    calls.append("packager-resume")
+                    or {"evidence_ids": ["ev-pack"], "status": "completed"}
+                ),
+            ),
+            agents[1],
+        ],
+        runs_root=tmp_path,
+        approved=True,
+        observed_at="2026-10-28T12:05:00+00:00",
+    )
+
+    assert calls == ["packager", "packager-resume", "follow-up"]
+    assert resumed.gate_state == "closed"
+    assert resumed.evidence_refs == ["ev-pack", "ev-follow"]
+    assert resumed.agent_statuses == [
+        {"name": "packager", "status": "completed"},
+        {"name": "follow-up", "status": "completed"},
+    ]
+
+
 def test_resume_with_rejection_stops_without_running_gated_agent(
     tmp_path: Path,
 ) -> None:

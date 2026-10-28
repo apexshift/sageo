@@ -1,0 +1,39 @@
+{
+  "agent_order": [
+    "technical-findings",
+    "content-aio",
+    "measurement-evidence"
+  ],
+  "skills_by_agent": {
+    "technical-findings": [
+      "crawl-issue-extractor",
+      "indexability-checker",
+      "schema-validator",
+      "cwv-scorer"
+    ],
+    "content-aio": [
+      "intent-classifier",
+      "answer-extractability-scorer",
+      "entity-coverage-checker",
+      "citation-opportunity-identifier"
+    ],
+    "measurement-evidence": [
+      "mention-sentiment-screener",
+      "severity-impact-scorer",
+      "evidence-packager"
+    ]
+  },
+  "skills_invoked": [
+    "crawl-issue-extractor",
+    "indexability-checker",
+    "schema-validator",
+    "cwv-scorer",
+    "intent-classifier",
+    "answer-extractability-scorer",
+    "entity-coverage-checker",
+    "citation-opportunity-identifier",
+    "mention-sentiment-screener",
+    "severity-impact-scorer",
+    "evidence-packager"
+  ]
+}
