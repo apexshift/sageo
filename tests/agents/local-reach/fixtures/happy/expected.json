@@ -1,0 +1,12 @@
+{
+  "skills_invoked": [
+    "gbp-profile-auditor",
+    "local-schema-checker",
+    "citation-consistency-checker"
+  ],
+  "evidence_ids": [
+    "ev-gbp-profile-auditor",
+    "ev-local-schema-checker",
+    "ev-citation-consistency-checker"
+  ]
+}
