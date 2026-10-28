@@ -37,18 +37,18 @@ Agents never route to other Agents — only the Orchestrator does. Skills consum
 
 ```text
 sageo/
-├── AGENTS.md, GLOSSARY.md, README.md
-├── docs/            # agents/, handoffs/, research/, templates/, governance prose
+├── AGENTS.md, GLOSSARY.md, README.md, LICENSE, CONTRIBUTING.md, CHANGELOG.md
+├── docs/            # architecture, ethics, examples/, templates/, handoffs/, …
 ├── skills/          # capability-pillar library (source of truth)
-├── agents/          # Agent contracts
-├── orchestrator/    # Orchestrator contract + policy
-├── connectors/      # MCP server packs
-├── src/sageo/       # shared Python library
+├── agents/          # reference Agent contracts (four shipped)
+├── orchestrator/    # Orchestrator contract + thin_audit routing
+├── connectors/      # read-only MCP packs (gsc, ga4, crawl-serp)
+├── src/sageo/       # shared Python library (lint, runtimes, metrics, …)
 ├── runs/            # local run artifacts (gitignored contents)
-└── tests/
+└── tests/           # Skill/Agent goldens, e2e, contract lint, …
 ```
 
-Governance prose lives at `docs/architecture.md`, `docs/ethical-accountability-policy.md`, root `CONTRIBUTING.md`, and `docs/contribution-guidelines.md`. `docs/adr/` may appear later when Architecture Decision Records are recorded.
+Governance prose lives at `docs/architecture.md`, `docs/ethical-accountability-policy.md`, root `CONTRIBUTING.md`, and `docs/contribution-guidelines.md`. Worked examples live under `docs/examples/`. `docs/adr/` may appear later when Architecture Decision Records are recorded.
 
 Skill path: `skills/<pillar-slug>/<skill-name>/` with required `SKILL.md`. Optional conventional subdirs: `scripts/`, `references/`, `assets/`. Directory name equals frontmatter `name`. No parallel `skill.yaml`; no README-as-contract.
 
@@ -71,12 +71,16 @@ Remediation plans that could affect a live site, and any live-site mutation, req
 
 ## Phase roadmap (P1–P5)
 
-| Phase | Focus |
-| --- | --- |
-| **P1** | Foundation & governance — tree, harness, templates, one template Skill, README, ethics |
-| **P2** | Core Skill library under the five capability pillars |
-| **P3** | Data connections (GSC, GA4, crawl/SERP MCP packs) and audit Orchestrator |
-| **P4** | Reference Agents composing Skills into workflows |
-| **P5** | Quality metrics, packaging, CI, public-release CONTRIBUTING |
+Phases **P1–P5 packaging are shipped on `main`**. Remaining before the
+**first public release tag**: cut the product version (see
+[`docs/first-public-release-checklist.md`](first-public-release-checklist.md)).
+
+| Phase | Focus | Status |
+| --- | --- | --- |
+| **P1** | Foundation & governance — tree, harness, templates, README, ethics | Shipped |
+| **P2** | Core Skill library under the five capability pillars (14 Skills) | Shipped |
+| **P3** | Data connections (GSC, GA4, crawl/SERP MCP packs) and audit Orchestrator | Shipped |
+| **P4** | Reference Agents composing Skills into workflows (four Agents) | Shipped |
+| **P5** | Metrics helper, national-audit e2e, hermetic CI, CHANGELOG, CONTRIBUTING, examples | Packaging shipped; first public tag remaining |
 
 Detail for each phase lives in `docs/handoffs/` and the linked Spec issues on the master map.

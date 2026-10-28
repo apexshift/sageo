@@ -16,44 +16,60 @@ Builders extend SageO by adding Skills under the five capability pillars and com
 
 Details live in [`docs/architecture.md`](docs/architecture.md).
 
-## Architecture
+## Documentation
 
-System layers, Evidence / Decision logs, Human review gates, and the P1–P5 roadmap: [`docs/architecture.md`](docs/architecture.md).
+| Doc | Description |
+| --- | --- |
+| [`docs/architecture.md`](docs/architecture.md) | Layers, pillars, Evidence / Decision logs, Human review gates, phase status |
+| [`GLOSSARY.md`](GLOSSARY.md) | Domain vocabulary (Skill, Agent, Orchestrator, Evidence, Reach, GEO, …) |
+| [`docs/examples/`](docs/examples/) | Honest walkthroughs (national/local audits, onboarding, AFK limits, …) |
+| [`docs/ethical-accountability-policy.md`](docs/ethical-accountability-policy.md) | White-hat rules, Evidence, gates, read-only Connectors |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | When external PRs open, Skill contribution bar, maintainer-only surfaces |
+| [`docs/first-public-release-checklist.md`](docs/first-public-release-checklist.md) | Maintainer gate before the first public tag |
+| [`CHANGELOG.md`](CHANGELOG.md) | Product release notes (Keep a Changelog) |
+| [`docs/templates/`](docs/templates/) | Copy-ready `SKILL.md` / `AGENT.md` contracts |
+| [`docs/handoffs/`](docs/handoffs/) | Locked phase-spec handoffs (P1–P5) |
+| [`LICENSE`](LICENSE) | MIT |
 
 ## Quickstart
 
 ```bash
 git clone https://github.com/apexshift/sageo.git
 cd sageo
-cp .env.example .env   # placeholders only; connectors land in P3
+cp .env.example .env   # placeholders only; never commit real secrets
 pip install -e ".[dev]"
-make test
+make ci                # lint + contract lint + pytest (hermetic)
 ```
 
-`make test` runs pytest (hermetic; no live API calls). The P1 template Skill is `skills/technical-foundation/schema-validator/`.
+`make ci` is the hermetic default (no live vendor calls; no production secrets).
+For pytest alone: `make test`. Walkthroughs: [`docs/examples/`](docs/examples/).
+A good first Skill to read: [`skills/technical-foundation/schema-validator/`](skills/technical-foundation/schema-validator/).
 
 ## Repository layout
 
 ```text
 sageo/
-├── AGENTS.md, GLOSSARY.md, README.md, LICENSE
-├── docs/            # agents/, handoffs/, research/, templates/, governance prose
-├── skills/          # capability-pillar library (source of truth)
-├── agents/          # Agent contracts (placeholder in P1)
-├── orchestrator/    # Orchestrator contract (placeholder in P1)
-├── connectors/      # MCP server packs (placeholder in P1)
-├── src/sageo/       # shared Python library
+├── AGENTS.md, GLOSSARY.md, README.md, LICENSE, CONTRIBUTING.md, CHANGELOG.md
+├── docs/            # architecture, ethics, examples/, templates/, handoffs/, …
+├── skills/          # 14 Skills under five capability pillars
+├── agents/          # technical-findings, content-aio, measurement-evidence, local-reach
+├── orchestrator/    # Orchestrator contract + thin_audit routing
+├── connectors/      # read-only MCP packs: gsc, ga4, crawl-serp
+├── src/sageo/       # shared Python library (lint, runtimes, metrics, …)
 ├── runs/            # local run artifacts (gitignored contents)
-└── tests/
+└── tests/           # goldens, e2e/national-audit, contract lint, …
 ```
 
 ## Ethics & review gates
 
-White-hat rules, Evidence requirements, Human review gates, and connector read-only policy through P5: [`docs/ethical-accountability-policy.md`](docs/ethical-accountability-policy.md).
+White-hat rules, Evidence requirements, Human review gates, and connector
+read-only policy through P5:
+[`docs/ethical-accountability-policy.md`](docs/ethical-accountability-policy.md).
 
 ## Contributing
 
-External pull requests wait until the first public release after P5. Until then, open issues for discussion.
+External pull requests wait until the **first public release tag**. Until then,
+open issues for discussion.
 
 Contribution contract: [`CONTRIBUTING.md`](CONTRIBUTING.md). Short pointer:
 [`docs/contribution-guidelines.md`](docs/contribution-guidelines.md).
