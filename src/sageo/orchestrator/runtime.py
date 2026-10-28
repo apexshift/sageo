@@ -15,11 +15,12 @@ from typing import Any, Callable, Literal, Mapping, Sequence
 from sageo.connectors.nhv import nhv_evidence
 
 GateLiteral = Literal["required", "not_required"]
-PipelineRole = Literal["technical", "content_aio", "measurement"]
+PipelineRole = Literal["technical", "content_aio", "local_reach", "measurement"]
 
 THIN_AUDIT_ORDER: tuple[PipelineRole, ...] = (
     "technical",
     "content_aio",
+    "local_reach",
     "measurement",
 )
 
@@ -475,6 +476,8 @@ def _build_schedule(
         }
         scheduled: list[AgentSpec] = []
         for role in THIN_AUDIT_ORDER:
+            if role == "local_reach" and request.reach != "local":
+                continue
             agent = by_role.get(role)
             if agent is not None:
                 scheduled.append(agent)

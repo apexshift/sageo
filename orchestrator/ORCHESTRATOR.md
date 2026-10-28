@@ -5,7 +5,7 @@ description: >-
   directory, and enforce Human review gates. Never calls Skills directly;
   Agents never route to other Agents.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 ## Purpose
@@ -23,8 +23,9 @@ to other Agents — only this Orchestrator owns sequencing.
    `primary_outcome` matches (and Reach when the Agent declares it).
 3. Unknown or unmatched intent → Decision log entry with ask-human / NHV
    Evidence; **do not invent** an Agent or fabricate a route.
-4. Optional playbook `thin_audit` schedules placeholder Agents by pipeline
-   role: Technical → Content/AIO → Measurement (P4 owns real Agent identities).
+4. Optional playbook `thin_audit` schedules Agents by pipeline role:
+   Technical → Content/AIO → (local-reach when Reach=`local`) → Measurement.
+   When Reach is `national`, `global`, or unset, local-reach is omitted.
 
 ## Prioritisation
 
@@ -38,10 +39,11 @@ to other Agents — only this Orchestrator owns sequencing.
 
 - Default pattern: **sequential** Agents sharing one **Run directory**
   (`runs/<id>/`).
-- P3 thin audit placeholders (names illustrative only):
+- Thin audit schedule (when Agents are available):
   1. Technical findings
   2. Content / AIO
-  3. Measurement / Evidence
+  3. Local Reach (only when Reach=`local`)
+  4. Measurement / Evidence
 - Parallel fan-out only when the Orchestrator explicitly schedules independent
   Agents with no cross-Agent Skill calls; join before any shared
   remediation / gate.
