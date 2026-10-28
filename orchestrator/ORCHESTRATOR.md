@@ -5,7 +5,7 @@ description: >-
   directory, and enforce Human review gates. Never calls Skills directly;
   Agents never route to other Agents.
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 ## Purpose
@@ -56,6 +56,9 @@ to other Agents — only this Orchestrator owns sequencing.
 - The Orchestrator **owns the stop**: no progression past a required gate
   without recorded human approval in the Decision log
   (`human_review: approved`).
+- `resume` accepts an optional `operator_note`. When set, the gate Decision
+  records `inputs.operator_note` and appends the note as a rationale suffix.
+  Omitted or empty notes keep the stock rationale.
 - Applies especially before finalising remediations or any live-site-affecting
   plan (live mutation remains out of scope through P5).
 - Gates are never skipped to save cost.
