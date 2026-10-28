@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://analyticsdata.googleapis.com/v1beta/properties/123456789:runReport",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "dateRanges": [{"startDate": "2026-10-01", "endDate": "2026-10-07"}],
+      "metrics": [{"name": "sessions"}]
+    }
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "error": {
+        "code": 401,
+        "message": "Unauthorized"
+      }
+    }
+  }
+}

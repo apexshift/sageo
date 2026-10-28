@@ -1,0 +1,9 @@
+{
+  "name": "properties/123456789/metadata",
+  "dimensions": [
+    {"apiName": "date", "uiName": "Date", "category": "Time"}
+  ],
+  "metrics": [
+    {"apiName": "sessions", "uiName": "Sessions", "category": "Session"}
+  ]
+}
