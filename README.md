@@ -68,8 +68,8 @@ read-only policy through P5:
 
 ## Contributing
 
-External pull requests open after the **first public release tag** (`v0.1.0`).
-Until that tag exists on the default branch, open issues for discussion.
+External pull requests follow [`CONTRIBUTING.md`](CONTRIBUTING.md) after the
+first public release tag ([`v0.1.0`](https://github.com/apexshift/sageo/releases/tag/v0.1.0)).
 
 Contribution contract: [`CONTRIBUTING.md`](CONTRIBUTING.md). Short pointer:
 [`docs/contribution-guidelines.md`](docs/contribution-guidelines.md).

@@ -24,10 +24,11 @@ def test_pyproject_version_is_0_1_0() -> None:
     assert match.group(1) == "0.1.0"
 
 
-def test_release_checklist_records_prep_complete_cut_pending() -> None:
+def test_release_checklist_records_v0_1_0_cut_complete() -> None:
     text = CHECKLIST.read_text(encoding="utf-8")
     assert "- [x] **CI green:**" in text
     assert "- [x] **CHANGELOG:**" in text
     assert "- [x] **Positioning / no-hype review:**" in text
-    assert "- [ ] **Cut release:**" in text
+    assert "- [x] **Cut release:**" in text
     assert "v0.1.0" in text
+    assert "releases/tag/v0.1.0" in text

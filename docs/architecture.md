@@ -71,9 +71,9 @@ Remediation plans that could affect a live site, and any live-site mutation, req
 
 ## Phase roadmap (P1–P5)
 
-Phases **P1–P5 packaging are shipped on `main`**. Product CHANGELOG is prepared
-for first public release **`v0.1.0`** (tag/GitHub Release after checklist cut
-step — see [`CHANGELOG.md`](../CHANGELOG.md) and
+Phases **P1–P5 are shipped on `main`**. First public product release:
+**[`v0.1.0`](https://github.com/apexshift/sageo/releases/tag/v0.1.0)** (see
+[`CHANGELOG.md`](../CHANGELOG.md) and
 [`docs/first-public-release-checklist.md`](first-public-release-checklist.md)).
 
 | Phase | Focus | Status |
@@ -82,6 +82,6 @@ step — see [`CHANGELOG.md`](../CHANGELOG.md) and
 | **P2** | Core Skill library under the five capability pillars (14 Skills) | Shipped |
 | **P3** | Data connections (GSC, GA4, crawl/SERP MCP packs) and audit Orchestrator | Shipped |
 | **P4** | Reference Agents composing Skills into workflows (four Agents) | Shipped |
-| **P5** | Metrics helper, national-audit e2e, hermetic CI, CHANGELOG, CONTRIBUTING, examples | Packaging shipped; `v0.1.0` tag pending cut |
+| **P5** | Metrics helper, national-audit e2e, hermetic CI, CHANGELOG, CONTRIBUTING, examples | Shipped in `v0.1.0` |
 
 Detail for each phase lives in `docs/handoffs/` and the linked Spec issues on the master map.
