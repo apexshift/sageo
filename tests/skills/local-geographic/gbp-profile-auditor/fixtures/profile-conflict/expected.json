@@ -1,0 +1,115 @@
+{
+  "findings": [
+    {
+      "id": "gbp.name",
+      "status": "pass",
+      "summary": "GBP business name is present."
+    },
+    {
+      "id": "gbp.address",
+      "status": "pass",
+      "summary": "GBP address includes streetAddress and addressLocality."
+    },
+    {
+      "id": "gbp.telephone",
+      "status": "pass",
+      "summary": "GBP telephone is present."
+    },
+    {
+      "id": "gbp.website",
+      "status": "pass",
+      "summary": "GBP website URL is present."
+    },
+    {
+      "id": "gbp.category",
+      "status": "pass",
+      "summary": "GBP primary category is present."
+    },
+    {
+      "id": "gbp.hours",
+      "status": "pass",
+      "summary": "GBP regular hours are present."
+    },
+    {
+      "id": "gbp.description",
+      "status": "pass",
+      "summary": "GBP description meets the minimum length (≥50 characters)."
+    },
+    {
+      "id": "gbp.photos",
+      "status": "pass",
+      "summary": "GBP photo count meets the minimum (≥3)."
+    },
+    {
+      "id": "gbp.profile_conflict",
+      "status": "fail",
+      "summary": "Primary and alternate GBP snapshots disagree on name, telephone."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "GBP business name is 'Acme Plumbing'.",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP address includes streetAddress '123 Main St' and addressLocality 'Springfield'.",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP telephone is '+1-555-0100'.",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP website is 'https://acmeplumbing.example'.",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP primary category is 'Plumber'.",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP regular hours include 5 day entries.",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP description length is 118 characters (minimum ≥50).",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "GBP photo count is 8 (minimum ≥3).",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "gbp-fixture-heuristics"
+    },
+    {
+      "claim": "Primary and alternate GBP snapshots disagree on name, telephone.",
+      "source": "fixture:profile-conflict/input/profile.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Two GBP profile snapshots disagree on one or more identity fields for the same business",
+      "method": "gbp-fixture-heuristics"
+    }
+  ]
+}

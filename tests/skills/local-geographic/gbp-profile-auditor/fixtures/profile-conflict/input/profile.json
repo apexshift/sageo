@@ -1,0 +1,23 @@
+{
+  "name": "Acme Plumbing",
+  "streetAddress": "123 Main St",
+  "addressLocality": "Springfield",
+  "telephone": "+1-555-0100",
+  "website": "https://acmeplumbing.example",
+  "primaryCategory": "Plumber",
+  "description": "Licensed plumbers serving Springfield homes and businesses with emergency and scheduled repairs for over twenty years.",
+  "hours": {
+    "monday": "09:00-17:00",
+    "tuesday": "09:00-17:00",
+    "wednesday": "09:00-17:00",
+    "thursday": "09:00-17:00",
+    "friday": "09:00-17:00"
+  },
+  "photoCount": 8,
+  "alternate": {
+    "name": "Acme Plumbing LLC",
+    "streetAddress": "123 Main St",
+    "addressLocality": "Springfield",
+    "telephone": "+1-555-0199"
+  }
+}
