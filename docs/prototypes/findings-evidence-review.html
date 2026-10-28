@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PROTOTYPE — Findings + Evidence review layouts</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --panel2: #243044;
+      --border: #2f3d52;
+      --text: #e7eef8;
+      --muted: #9aabbf;
+      --accent: #5b9fd4;
+      --high: #3d9a6a;
+      --medium: #c9a227;
+      --low: #c47a3a;
+      --nhv: #c44d6a;
+      --danger: #e85d5d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .proto-banner {
+      background: #5a3d00;
+      color: #ffe7a0;
+      text-align: center;
+      padding: 6px 12px;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+    .shell { display: flex; min-height: calc(100vh - 28px); }
+    .sidebar {
+      width: 240px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      gap: 8px;
+    }
+    .sidebar h1 { font-size: 13px; margin: 0 0 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .btn.primary { background: var(--accent); border-color: transparent; color: #061018; font-weight: 600; }
+    .run-row {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #152033;
+      cursor: default;
+    }
+    .run-row.active { outline: 2px solid var(--accent); }
+    .run-row .goal { font-weight: 600; font-size: 13px; }
+    .run-row .meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #3a2a14;
+      color: #f0c674;
+      margin-top: 4px;
+    }
+    .sidebar-foot { margin-top: auto; }
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 10px 16px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .tab {
+      padding: 10px 14px;
+      color: var(--muted);
+      border-radius: 8px 8px 0 0;
+      cursor: default;
+    }
+    .tab.active {
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-bottom-color: var(--bg);
+      margin-bottom: -1px;
+    }
+    .stage { flex: 1; padding: 16px; overflow: auto; padding-bottom: 88px; }
+    .conf {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .conf.high { background: rgba(61,154,106,.25); color: #7ddeb0; }
+    .conf.medium { background: rgba(201,162,39,.22); color: #e8d07a; }
+    .conf.low { background: rgba(196,122,58,.25); color: #f0b27a; }
+    .conf.nhv { background: rgba(196,77,106,.28); color: #f5a0b4; }
+    .muted { color: var(--muted); }
+    .claim { font-weight: 600; }
+    .source { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
+
+    /* Variant A — master/detail */
+    .a-layout { display: grid; grid-template-columns: 340px 1fr; gap: 12px; height: calc(100vh - 160px); min-height: 420px; }
+    .a-list, .a-detail {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: auto;
+    }
+    .a-item {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .a-item:hover { background: var(--panel2); }
+    .a-item.selected { background: #1e3a55; }
+    .a-detail { padding: 16px; }
+    .a-detail h2 { margin: 0 0 8px; font-size: 16px; }
+    .a-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+    .a-block { margin-top: 14px; }
+    .a-block h3 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; }
+
+    /* Variant B — expandable full-width stack */
+    .b-toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+    .b-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .b-head {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+    .b-head:hover { background: var(--panel2); }
+    .b-body {
+      display: none;
+      padding: 0 14px 14px;
+      border-top: 1px solid var(--border);
+      background: #121a26;
+    }
+    .b-item.open .b-body { display: block; }
+    .b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    @media (max-width: 900px) { .b-grid { grid-template-columns: 1fr; } }
+
+    /* Variant C — triage columns by confidence */
+    .c-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 0.9fr;
+      gap: 10px;
+      align-items: start;
+    }
+    @media (max-width: 1100px) { .c-layout { grid-template-columns: 1fr; } }
+    .c-col {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      min-height: 320px;
+    }
+    .c-col h2 {
+      margin: 0;
+      padding: 10px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .c-card {
+      margin: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .c-card.selected { outline: 2px solid var(--accent); }
+    .c-inspector {
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      min-height: 280px;
+    }
+    .c-nhv-col h2 { background: rgba(196,77,106,.15); }
+
+    /* Switcher */
+    .switcher {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f4f7fb;
+      color: #102033;
+      border-radius: 999px;
+      padding: 8px 12px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.45);
+      z-index: 50;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .switcher button {
+      border: none;
+      background: #d9e4f2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .switcher .label { min-width: 220px; text-align: center; }
+    .state-dump {
+      margin-top: 16px;
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 11px;
+      color: var(--muted);
+      white-space: pre-wrap;
+      background: #0a0e14;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!--
+    PROTOTYPE (throwaway): Three variants of Findings + Evidence review for map #142 / ticket #148.
+    Question: list vs master–detail, how confidence/NHV appears, how a finding opens into claim/source detail.
+    Open file or: python3 -m http.server 8765 --directory docs/prototypes  → http://127.0.0.1:8765/findings-evidence-review.html?variant=A
+  -->
+  <div class="proto-banner">PROTOTYPE — not production · Findings + Evidence layouts · use bottom bar or ?variant=A|B|C · ← → keys</div>
+  <div class="shell">
+    <aside class="sidebar">
+      <h1>SageO Operator</h1>
+      <button class="btn primary" type="button">+ New Run</button>
+      <div class="run-row active">
+        <div class="goal">thin_audit example.com (national)</div>
+        <div class="meta">example.com · national</div>
+        <span class="badge">awaiting approval</span>
+      </div>
+      <div class="run-row">
+        <div class="goal">Q3 local check</div>
+        <div class="meta">shop.example.com · local</div>
+        <span class="badge" style="background:#1a3328;color:#8fd6b0">completed</span>
+      </div>
+      <div class="sidebar-foot">
+        <button class="btn" type="button">Settings</button>
+      </div>
+    </aside>
+    <div class="main">
+      <nav class="tabs" aria-label="Run workspace">
+        <div class="tab">Progress</div>
+        <div class="tab active">Findings</div>
+        <div class="tab">Review</div>
+      </nav>
+      <div class="stage" id="stage"></div>
+    </div>
+  </div>
+
+  <div class="switcher" role="toolbar" aria-label="Prototype variant switcher">
+    <button type="button" id="prev" aria-label="Previous variant">←</button>
+    <div class="label" id="switcher-label">A</div>
+    <button type="button" id="next" aria-label="Next variant">→</button>
+  </div>
+
+  <script>
+    const FINDINGS = [
+      {
+        id: "f1",
+        agent: "technical-findings",
+        title: "robots.txt blocks /blog/",
+        claim: "Disallow rule blocks /blog/ from crawling on https://example.com/robots.txt",
+        source: "https://example.com/robots.txt",
+        observed_at: "2026-10-28T12:01:00Z",
+        confidence: "high",
+        method: "header_html_fetch"
+      },
+      {
+        id: "f2",
+        agent: "technical-findings",
+        title: "Missing canonical on PDP",
+        claim: "Product detail page has no rel=canonical link element",
+        source: "https://example.com/products/widget",
+        observed_at: "2026-10-28T12:02:00Z",
+        confidence: "medium",
+        method: "dom_parse"
+      },
+      {
+        id: "f3",
+        agent: "content-aio",
+        title: "Answer block not extractable",
+        claim: "Primary question on /guides/shipping lacks a concise answer-first paragraph",
+        source: "https://example.com/guides/shipping",
+        observed_at: "2026-10-28T12:05:00Z",
+        confidence: "low",
+        method: "content_heuristic"
+      },
+      {
+        id: "f4",
+        agent: "content-aio",
+        title: "Citation opportunity unclear",
+        claim: "Could not verify whether brand is cited in target AI overviews for 'best widget 2026'",
+        source: "connector:crawl-serp / serp_google_organic",
+        observed_at: "2026-10-28T12:06:00Z",
+        confidence: "needs_human_verification",
+        verification_reason: "empty_result",
+        method: "serp_sample"
+      },
+      {
+        id: "f5",
+        agent: "measurement-evidence",
+        title: "GSC impressions flat YoY",
+        claim: "Search Console query group 'widgets' impressions changed <5% YoY",
+        source: "connector:gsc property=sc-domain:example.com",
+        observed_at: "2026-10-28T12:08:00Z",
+        confidence: "needs_human_verification",
+        verification_reason: "credentials_missing",
+        method: "gsc_run_report"
+      },
+      {
+        id: "f6",
+        agent: "technical-findings",
+        title: "JSON-LD WebPage present",
+        claim: "Page includes schema.org WebPage node with name and url",
+        source: "https://example.com/",
+        observed_at: "2026-10-28T12:03:00Z",
+        confidence: "high",
+        method: "schema_parse"
+      }
+    ];
+
+    const VARIANTS = {
+      A: { name: "Master–detail" },
+      B: { name: "Expandable stack" },
+      C: { name: "Confidence triage columns" }
+    };
+
+    let selectedId = "f1";
+    let openIds = new Set(["f4"]);
+
+    function confClass(c) {
+      return c === "needs_human_verification" ? "nhv" : c;
+    }
+    function confLabel(c) {
+      return c === "needs_human_verification" ? "NHV" : c;
+    }
+
+    function detailHtml(f) {
+      return `
+        <div class="a-meta">
+          <span class="conf ${confClass(f.confidence)}">${confLabel(f.confidence)}</span>
+          <span class="muted">${f.agent}</span>
+          <span class="muted">${f.observed_at}</span>
+        </div>
+        <div class="a-block">
+          <h3>Claim</h3>
+          <div class="claim">${escapeHtml(f.claim)}</div>
+        </div>
+        <div class="a-block">
+          <h3>Source</h3>
+          <div class="source">${escapeHtml(f.source)}</div>
+        </div>
+        <div class="a-block">
+          <h3>Method</h3>
+          <div class="muted">${escapeHtml(f.method || "—")}</div>
+        </div>
+        ${f.verification_reason ? `<div class="a-block"><h3>Verification reason</h3><div class="conf nhv">${escapeHtml(f.verification_reason)}</div><p class="muted">needs_human_verification Evidence — do not treat as verified fact.</p></div>` : ""}
+      `;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[ch]);
+    }
+
+    function renderA() {
+      const selected = FINDINGS.find((f) => f.id === selectedId) || FINDINGS[0];
+      return `
+        <p class="muted" style="margin-top:0">Variant A — left list, right Evidence detail. Select a finding.</p>
+        <div class="a-layout">
+          <div class="a-list">
+            ${FINDINGS.map((f) => `
+              <div class="a-item ${f.id === selected.id ? "selected" : ""}" data-select="${f.id}">
+                <div class="claim">${escapeHtml(f.title)}</div>
+                <div class="muted" style="margin-top:4px">${escapeHtml(f.agent)}</div>
+                <div style="margin-top:6px"><span class="conf ${confClass(f.confidence)}">${confLabel(f.confidence)}</span></div>
+              </div>
+            `).join("")}
+          </div>
+          <div class="a-detail">
+            <h2>${escapeHtml(selected.title)}</h2>
+            ${detailHtml(selected)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderB() {
+      return `
+        <p class="muted" style="margin-top:0">Variant B — full-width expandable rows; open a row for claim/source.</p>
+        <div class="b-toolbar">
+          <span class="muted">${FINDINGS.length} findings</span>
+          <span class="conf nhv">NHV ${FINDINGS.filter(f => f.confidence === "needs_human_verification").length}</span>
+          <span class="conf high">high ${FINDINGS.filter(f => f.confidence === "high").length}</span>
+        </div>
+        ${FINDINGS.map((f) => `
+          <div class="b-item ${openIds.has(f.id) ? "open" : ""}" data-toggle="${f.id}">
+            <div class="b-head">
+              <div>
+                <div class="claim">${escapeHtml(f.title)}</div>
+                <div class="muted">${escapeHtml(f.agent)} · ${escapeHtml(f.source)}</div>
+              </div>
+              <span class="conf ${confClass(f.confidence)}">${confLabel(f.confidence)}</span>
+              <span class="muted">${openIds.has(f.id) ? "▾" : "▸"}</span>
+            </div>
+            <div class="b-body">
+              <div class="b-grid">
+                <div>
+                  <h3 class="muted" style="font-size:12px;text-transform:uppercase">Claim</h3>
+                  <div class="claim">${escapeHtml(f.claim)}</div>
+                </div>
+                <div>
+                  <h3 class="muted" style="font-size:12px;text-transform:uppercase">Evidence</h3>
+                  <div class="source">${escapeHtml(f.source)}</div>
+                  <div class="muted" style="margin-top:8px">${escapeHtml(f.observed_at)} · ${escapeHtml(f.method || "")}</div>
+                  ${f.verification_reason ? `<div style="margin-top:8px"><span class="conf nhv">${escapeHtml(f.verification_reason)}</span></div>` : ""}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join("")}
+      `;
+    }
+
+    function renderC() {
+      const nhv = FINDINGS.filter((f) => f.confidence === "needs_human_verification");
+      const rest = FINDINGS.filter((f) => f.confidence !== "needs_human_verification");
+      const selected = FINDINGS.find((f) => f.id === selectedId) || FINDINGS[0];
+      const byAgent = {};
+      for (const f of rest) {
+        (byAgent[f.agent] ||= []).push(f);
+      }
+      return `
+        <p class="muted" style="margin-top:0">Variant C — NHV triage column first; other findings by Agent; sticky inspector.</p>
+        <div class="c-layout">
+          <div class="c-col c-nhv-col">
+            <h2>Needs human verification <span class="conf nhv">${nhv.length}</span></h2>
+            ${nhv.map((f) => card(f)).join("") || `<p class="muted" style="padding:12px">None</p>`}
+          </div>
+          <div class="c-col">
+            <h2>By Agent</h2>
+            ${Object.entries(byAgent).map(([agent, items]) => `
+              <div style="padding:8px 8px 0;font-size:12px;color:var(--muted)">${escapeHtml(agent)}</div>
+              ${items.map((f) => card(f)).join("")}
+            `).join("")}
+          </div>
+          <div class="c-inspector">
+            <h2 style="margin:0 0 8px;font-size:16px">${escapeHtml(selected.title)}</h2>
+            ${detailHtml(selected)}
+          </div>
+        </div>
+      `;
+      function card(f) {
+        return `
+          <div class="c-card ${f.id === selected.id ? "selected" : ""}" data-select="${f.id}">
+            <div class="claim">${escapeHtml(f.title)}</div>
+            <div style="margin-top:6px"><span class="conf ${confClass(f.confidence)}">${confLabel(f.confidence)}</span></div>
+            ${f.verification_reason ? `<div class="muted" style="margin-top:6px">${escapeHtml(f.verification_reason)}</div>` : ""}
+          </div>`;
+      }
+    }
+
+    function currentVariant() {
+      const v = new URLSearchParams(location.search).get("variant") || "A";
+      return VARIANTS[v] ? v : "A";
+    }
+
+    function setVariant(v) {
+      const url = new URL(location.href);
+      url.searchParams.set("variant", v);
+      history.replaceState(null, "", url);
+      render();
+    }
+
+    function cycle(delta) {
+      const keys = Object.keys(VARIANTS);
+      const i = keys.indexOf(currentVariant());
+      setVariant(keys[(i + delta + keys.length) % keys.length]);
+    }
+
+    function render() {
+      const v = currentVariant();
+      const stage = document.getElementById("stage");
+      const html = v === "A" ? renderA() : v === "B" ? renderB() : renderC();
+      const dump = {
+        variant: v,
+        selectedId,
+        openIds: [...openIds],
+        findings: FINDINGS.length
+      };
+      stage.innerHTML = html + `<div class="state-dump">prototype state: ${escapeHtml(JSON.stringify(dump, null, 2))}</div>`;
+      document.getElementById("switcher-label").textContent = `${v} (${VARIANTS[v].name})`;
+
+      stage.querySelectorAll("[data-select]").forEach((el) => {
+        el.addEventListener("click", () => {
+          selectedId = el.getAttribute("data-select");
+          render();
+        });
+      });
+      stage.querySelectorAll("[data-toggle]").forEach((el) => {
+        el.addEventListener("click", (e) => {
+          if (e.target.closest(".b-body") && !e.target.closest(".b-head")) return;
+          const id = el.getAttribute("data-toggle");
+          if (openIds.has(id)) openIds.delete(id); else openIds.add(id);
+          selectedId = id;
+          render();
+        });
+      });
+    }
+
+    document.getElementById("prev").addEventListener("click", () => cycle(-1));
+    document.getElementById("next").addEventListener("click", () => cycle(1));
+    document.addEventListener("keydown", (e) => {
+      const t = e.target;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (e.key === "ArrowLeft") cycle(-1);
+      if (e.key === "ArrowRight") cycle(1);
+    });
+
+    render();
+  </script>
+</body>
+</html>
