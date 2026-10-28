@@ -1,0 +1,54 @@
+{
+  "findings": [
+    {
+      "id": "crawl.client_error",
+      "status": "fail",
+      "summary": "Found 1 HTTP 4xx client error(s) in the crawl log."
+    },
+    {
+      "id": "crawl.server_error",
+      "status": "fail",
+      "summary": "Found 1 HTTP 5xx server error(s) in the crawl log."
+    },
+    {
+      "id": "crawl.redirect_chain",
+      "status": "fail",
+      "summary": "Found 1 redirect chain(s) exceeding the maximum hop count (≤2)."
+    },
+    {
+      "id": "crawl.timeout",
+      "status": "fail",
+      "summary": "Found 1 crawl timeout(s) in the crawl log."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "1 of 5 crawl entries returned HTTP 4xx (e.g. https://example.com/missing).",
+      "source": "fixture:http-errors/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "1 of 5 crawl entries returned HTTP 5xx (e.g. https://example.com/boom).",
+      "source": "fixture:http-errors/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "1 of 5 crawl entries exceed 2 redirect hops (e.g. https://example.com/old).",
+      "source": "fixture:http-errors/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "1 of 5 crawl entries timed out (e.g. https://example.com/slow).",
+      "source": "fixture:http-errors/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    }
+  ]
+}

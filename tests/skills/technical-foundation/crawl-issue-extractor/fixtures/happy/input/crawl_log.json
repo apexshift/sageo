@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "url": "https://example.com/",
+      "status": 200,
+      "redirect_count": 0,
+      "error": null
+    },
+    {
+      "url": "https://example.com/about",
+      "status": 200,
+      "redirect_count": 1,
+      "error": null
+    },
+    {
+      "url": "https://example.com/services",
+      "status": 200,
+      "redirect_count": 0,
+      "error": null
+    }
+  ]
+}
