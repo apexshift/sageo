@@ -33,6 +33,8 @@ component versions: see tree `metadata.version` (typically starting at
 - Hermetic GitHub Actions CI (`make ci`: ruff lint, contract lint, pytest).
 - Product CHANGELOG and version-sync posture (this file; contract lint rejects
   non-semver `metadata.version`).
+- Public-release `CONTRIBUTING.md` and
+  `docs/first-public-release-checklist.md`.
 
 #### P4 — Workflow Agents
 
