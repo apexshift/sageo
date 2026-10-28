@@ -35,6 +35,8 @@ component versions: see tree `metadata.version` (typically starting at
   non-semver `metadata.version`).
 - Public-release `CONTRIBUTING.md` and
   `docs/first-public-release-checklist.md`.
+- `docs/examples/` — national-audit walkthrough, Skill layout pointer, and
+  Connector credentials via `.env.example`.
 
 #### P4 — Workflow Agents
 
