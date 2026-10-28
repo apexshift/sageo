@@ -48,7 +48,7 @@ sageo/
 └── tests/
 ```
 
-Governance prose lives at `docs/architecture.md`, `docs/ethical-accountability-policy.md`, and `docs/contribution-guidelines.md`. `docs/adr/` may appear later when Architecture Decision Records are recorded.
+Governance prose lives at `docs/architecture.md`, `docs/ethical-accountability-policy.md`, root `CONTRIBUTING.md`, and `docs/contribution-guidelines.md`. `docs/adr/` may appear later when Architecture Decision Records are recorded.
 
 Skill path: `skills/<pillar-slug>/<skill-name>/` with required `SKILL.md`. Optional conventional subdirs: `scripts/`, `references/`, `assets/`. Directory name equals frontmatter `name`. No parallel `skill.yaml`; no README-as-contract.
 

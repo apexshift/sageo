@@ -55,7 +55,8 @@ White-hat rules, Evidence requirements, Human review gates, and connector read-o
 
 External pull requests wait until the first public release after P5. Until then, open issues for discussion.
 
-Posture summary (Skills + docs first when the door opens): [`docs/contribution-guidelines.md`](docs/contribution-guidelines.md).
+Contribution contract: [`CONTRIBUTING.md`](CONTRIBUTING.md). Short pointer:
+[`docs/contribution-guidelines.md`](docs/contribution-guidelines.md).
 
 ## License
 
