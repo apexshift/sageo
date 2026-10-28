@@ -112,3 +112,15 @@ def test_lint_rejects_missing_frontmatter(tmp_path: Path) -> None:
     (skill_dir / "SKILL.md").write_text("## Purpose\n\nNo frontmatter.\n", encoding="utf-8")
     issues = lint_skill_package(skill_dir)
     assert any(i.code == "missing_frontmatter" for i in issues)
+
+
+def test_shipped_orchestrator_package_passes_contract_lint() -> None:
+    from sageo.contract_lint import lint_orchestrator_package
+
+    assert lint_orchestrator_package(REPO_ROOT / "orchestrator") == []
+
+
+def test_contract_lint_cli_exits_zero_on_repo_root() -> None:
+    from sageo.contract_lint import main
+
+    assert main(["--root", str(REPO_ROOT)]) == 0

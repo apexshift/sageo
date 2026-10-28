@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-import pytest
 import yaml
 
 from sageo.agents import run_agent
