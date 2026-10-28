@@ -17,6 +17,7 @@ dependencies = [
 dev = [
   "pytest>=8.0",
   "jsonschema>=4.0",
+  "ruff>=0.6",
 ]
 
 [tool.setuptools.packages.find]
@@ -27,3 +28,13 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 # Unique basenames under tests/skills/<pillar>/<name>/test_golden.py
 addopts = ["--import-mode=importlib"]
+
+[tool.ruff]
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# Hermetic CI lint: syntax/undefined-name/unused-import class checks.
+# Broader style rules can land in later hygiene tickets.
+select = ["E", "F"]
+ignore = ["E501"]

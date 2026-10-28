@@ -1,4 +1,4 @@
-"""Lint Skill and Agent packages against locked metadata contracts."""
+"""Lint Skill, Agent, and Orchestrator packages against locked metadata contracts."""
 
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ AGENT_REQUIRED_METADATA = (
 
 @dataclass(frozen=True)
 class LintIssue:
-    """One contract violation for a Skill or Agent package."""
+    """One contract violation for a Skill, Agent, or Orchestrator package."""
 
     code: str
     message: str
@@ -136,6 +136,53 @@ def lint_all_agent_packages(agents_root: Path) -> list[LintIssue]:
     issues: list[LintIssue] = []
     for package in discover_agent_packages(agents_root):
         issues.extend(lint_agent_package(package))
+    return issues
+
+
+def lint_orchestrator_package(orchestrator_dir: Path) -> list[LintIssue]:
+    """Validate Orchestrator package metadata (version required)."""
+    orch_md = orchestrator_dir / "ORCHESTRATOR.md"
+    if not orch_md.is_file():
+        return [
+            LintIssue(
+                "missing_orchestrator_md",
+                "ORCHESTRATOR.md is required",
+                orchestrator_dir,
+            )
+        ]
+    frontmatter = _parse_frontmatter(orch_md.read_text(encoding="utf-8"))
+    if frontmatter is None:
+        return [
+            LintIssue(
+                "missing_frontmatter",
+                "YAML frontmatter is required",
+                orch_md,
+            )
+        ]
+    issues: list[LintIssue] = []
+    for field in REQUIRED_TOP_LEVEL:
+        if field not in frontmatter or frontmatter[field] in (None, ""):
+            issues.append(
+                LintIssue(
+                    "missing_field",
+                    f"missing required field {field!r}",
+                    orch_md,
+                )
+            )
+    metadata = frontmatter.get("metadata")
+    if not isinstance(metadata, dict):
+        issues.append(
+            LintIssue("invalid_metadata", "metadata must be a mapping", orch_md)
+        )
+        return issues
+    if "version" not in metadata or metadata["version"] in (None, ""):
+        issues.append(
+            LintIssue(
+                "missing_metadata_field",
+                "missing required metadata field 'version'",
+                orch_md,
+            )
+        )
     return issues
 
 
@@ -368,3 +415,41 @@ def _lint_agent_path_alignment(
             )
         ]
     return []
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI: lint Skill, Agent, and Orchestrator packages under the repo root."""
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(
+        prog="python -m sageo.contract_lint",
+        description="Lint Skill/Agent/Orchestrator package metadata contracts.",
+    )
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=Path.cwd(),
+        help="Repository root (default: cwd)",
+    )
+    args = parser.parse_args(argv)
+    root: Path = args.root
+
+    issues: list[LintIssue] = []
+    issues.extend(lint_all_skill_packages(root / "skills"))
+    issues.extend(lint_all_agent_packages(root / "agents"))
+    orch_dir = root / "orchestrator"
+    if orch_dir.is_dir():
+        issues.extend(lint_orchestrator_package(orch_dir))
+
+    for issue in issues:
+        print(f"{issue.path}: {issue.code}: {issue.message}", file=sys.stderr)
+    if issues:
+        print(f"contract lint failed: {len(issues)} issue(s)", file=sys.stderr)
+        return 1
+    print("contract lint passed")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
