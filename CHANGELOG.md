@@ -35,6 +35,8 @@ component versions: see tree `metadata.version` (typically starting at
   non-semver `metadata.version`).
 - Public-release `CONTRIBUTING.md` and
   `docs/first-public-release-checklist.md`.
+- `docs/examples/` — national/local/technical-onboarding walkthroughs, Skill
+  layout, Connector credentials, plus global Reach and AFK automation patterns.
 
 #### P4 — Workflow Agents
 
