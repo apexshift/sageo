@@ -68,8 +68,8 @@ read-only policy through P5:
 
 ## Contributing
 
-External pull requests wait until the **first public release tag**. Until then,
-open issues for discussion.
+External pull requests open after the **first public release tag** (`v0.1.0`).
+Until that tag exists on the default branch, open issues for discussion.
 
 Contribution contract: [`CONTRIBUTING.md`](CONTRIBUTING.md). Short pointer:
 [`docs/contribution-guidelines.md`](docs/contribution-guidelines.md).
