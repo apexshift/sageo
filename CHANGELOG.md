@@ -19,6 +19,11 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 
 ## [Unreleased]
 
+### Changed
+
+- Orchestrator `thin_audit` schedules `local-reach` after content/AIO and before
+  measurement when Reach=`local`; omits it for national, global, or unset Reach.
+
 ## [0.1.1] - 2026-10-28
 
 ### Fixed
