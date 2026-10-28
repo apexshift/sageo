@@ -1,0 +1,29 @@
+{
+  "findings": [
+    {
+      "id": "crawl.client_error",
+      "status": "fail",
+      "summary": "Found 1 HTTP 4xx client error(s) in the crawl log."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "1 of 5 crawl entries returned HTTP 4xx.",
+      "source": "fixture:http-errors/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "Missing source on this record.",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high"
+    },
+    {
+      "claim": "Soft-404 needs review.",
+      "source": "fixture:soft-404/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification"
+    }
+  ]
+}

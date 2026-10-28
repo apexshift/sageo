@@ -1,0 +1,73 @@
+{
+  "package": {
+    "ready_for_review": true,
+    "finding_count": 2,
+    "evidence_count": 2,
+    "nhv_count": 1,
+    "ranked_ids": ["crawl.soft_404", "priority.rank"],
+    "findings": [
+      {
+        "id": "crawl.soft_404",
+        "status": "fail",
+        "summary": "Found 1 soft-404 candidate(s) that need human verification."
+      },
+      {
+        "id": "priority.rank",
+        "status": "pass",
+        "summary": "Top priority is 'crawl.soft_404' with score 20."
+      }
+    ],
+    "evidence": [
+      {
+        "claim": "1 of 2 crawl entries are soft-404 candidates (e.g. https://example.com/gone-soft).",
+        "source": "fixture:soft-404/input/crawl_log.json",
+        "observed_at": "2026-10-27T12:00:00Z",
+        "confidence": "needs_human_verification",
+        "verification_reason": "Crawl marked the URL as soft_404; confirm whether the page is a true not-found experience",
+        "method": "crawl-log-heuristics"
+      },
+      {
+        "claim": "Issue 'crawl.soft_404' score is 20 (severity 4 × impact 5).",
+        "source": "fixture:happy/input/issues.json",
+        "observed_at": "2026-10-27T12:00:00Z",
+        "confidence": "high",
+        "method": "severity-impact-product"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "package.ready",
+      "status": "pass",
+      "summary": "Evidence bundle is review-ready (2 findings, 2 Evidence records)."
+    },
+    {
+      "id": "package.nhv_pending",
+      "status": "fail",
+      "summary": "Package includes 1 Evidence record(s) marked needs_human_verification."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Bundled 2 findings and 2 Evidence records (1 needs_human_verification).",
+      "source": "fixture:nhv-items/input/bundle.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "evidence-bundle-package"
+    },
+    {
+      "claim": "Preserved ranked_ids order: crawl.soft_404, priority.rank.",
+      "source": "fixture:nhv-items/input/bundle.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "evidence-bundle-package"
+    },
+    {
+      "claim": "1 Evidence record(s) require human verification before acting on dependent claims.",
+      "source": "fixture:nhv-items/input/bundle.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "evidence-bundle-package"
+    }
+  ]
+}
