@@ -1,0 +1,12 @@
+{
+  "skills_invoked": [
+    "intent-classifier",
+    "answer-extractability-scorer",
+    "entity-coverage-checker"
+  ],
+  "evidence_ids": [
+    "ev-intent-classifier",
+    "ev-answer-extractability-scorer",
+    "ev-entity-coverage-checker"
+  ]
+}
