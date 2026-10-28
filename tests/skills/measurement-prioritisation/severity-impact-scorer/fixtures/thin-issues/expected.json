@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "id": "priority.scored",
+      "status": "fail",
+      "summary": "No issues available to score by severity × impact."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Issue list contains 0 issues to score.",
+      "source": "fixture:thin-issues/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    }
+  ]
+}

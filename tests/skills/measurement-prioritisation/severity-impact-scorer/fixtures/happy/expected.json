@@ -1,0 +1,44 @@
+{
+  "findings": [
+    {
+      "id": "priority.scored",
+      "status": "pass",
+      "summary": "Scored 3 issues by severity × impact."
+    },
+    {
+      "id": "priority.rank",
+      "status": "pass",
+      "summary": "Top priority is 'crawl.client_error' with score 25."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Issue 'crawl.client_error' score is 25 (severity 5 × impact 5).",
+      "source": "fixture:happy/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Issue 'cwv.lcp' score is 12 (severity 3 × impact 4).",
+      "source": "fixture:happy/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Issue 'schema.missing_type' score is 4 (severity 2 × impact 2).",
+      "source": "fixture:happy/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Ranked 3 issues; top priority is 'crawl.client_error' (score 25).",
+      "source": "fixture:happy/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "findings": [
+    {
+      "id": "priority.scored",
+      "status": "pass",
+      "summary": "Scored 2 issues by severity × impact."
+    },
+    {
+      "id": "priority.rank",
+      "status": "pass",
+      "summary": "Top priority is 'crawl.client_error' with score 25."
+    },
+    {
+      "id": "priority.score_conflict",
+      "status": "fail",
+      "summary": "Primary and alternate issue lists disagree on score for 1 issue(s)."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Issue 'crawl.client_error' score is 25 (severity 5 × impact 5).",
+      "source": "fixture:score-conflict/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Issue 'cwv.lcp' score is 12 (severity 3 × impact 4).",
+      "source": "fixture:score-conflict/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Ranked 2 issues; top priority is 'crawl.client_error' (score 25).",
+      "source": "fixture:score-conflict/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    },
+    {
+      "claim": "Primary and alternate scores disagree for issue 'cwv.lcp' (12 vs 4).",
+      "source": "fixture:score-conflict/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Two issue-list snapshots disagree on severity × impact score for the same issue id",
+      "method": "severity-impact-product"
+    }
+  ]
+}
