@@ -23,6 +23,7 @@ follow [`CONTRIBUTING.md`](../CONTRIBUTING.md) only after this tag exists.
       practitioner-first; no guaranteed rankings, autonomous publishing, or
       set-and-forget live-site claims (hype language appears only as rejected
       framing in ethics/CONTRIBUTING)
-- [ ] **Cut release:** GitHub Release + package version tag `v0.1.0` published
-      after this prep merges to `main`; release notes point at CHANGELOG and
-      included component versions (or “see tree”)
+- [x] **Cut release:** GitHub Release + package version tag `v0.1.0` published
+      on `main`; release notes point at CHANGELOG and included component
+      versions (or “see tree”) —
+      https://github.com/apexshift/sageo/releases/tag/v0.1.0
