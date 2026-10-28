@@ -1,0 +1,11 @@
+{
+  "rows": [
+    {
+      "keys": ["example query"],
+      "clicks": 12,
+      "impressions": 100,
+      "ctr": 0.12,
+      "position": 4.5
+    }
+  ]
+}

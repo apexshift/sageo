@@ -1,4 +1,5 @@
-"""Shared Connector helpers (NHV Evidence, credential gates).
+"""Shared Connector helpers (NHV Evidence, credential gates) and packs.
 
-MCP packs under ``connectors/`` call these; Skills stay SDK-free.
+Pack runtimes (e.g. ``sageo.connectors.gsc``) live here; pack contracts under
+repo ``connectors/<pack>/``. Skills stay SDK-free.
 """
