@@ -1,4 +1,4 @@
-"""Lint Skill packages against the locked SKILL.md metadata contract."""
+"""Lint Skill and Agent packages against locked metadata contracts."""
 
 from __future__ import annotations
 
@@ -20,6 +20,9 @@ CAPABILITY_PILLARS = frozenset(
 PRIMARY_OUTCOMES = frozenset({"SEO", "AIO", "GEO"})
 EVIDENCE_REQUIREMENTS = frozenset({"full", "partial", "none"})
 HUMAN_REVIEW_GATES = frozenset({"required", "not_required"})
+COST_MODELS = frozenset(
+    {"tokens_and_connector_calls", "tokens_only", "manual_estimate"}
+)
 
 REQUIRED_TOP_LEVEL = ("name", "description", "metadata")
 REQUIRED_METADATA = (
@@ -29,11 +32,18 @@ REQUIRED_METADATA = (
     "evidence_requirement",
     "human_review_gate",
 )
+AGENT_REQUIRED_METADATA = (
+    "version",
+    "primary_outcome",
+    "skills",
+    "human_review_gate",
+    "cost_model",
+)
 
 
 @dataclass(frozen=True)
 class LintIssue:
-    """One contract violation for a Skill package."""
+    """One contract violation for a Skill or Agent package."""
 
     code: str
     message: str
@@ -82,6 +92,64 @@ def lint_all_skill_packages(skills_root: Path) -> list[LintIssue]:
     for package in discover_skill_packages(skills_root):
         issues.extend(lint_skill_package(package))
     return issues
+
+
+def discover_agent_packages(agents_root: Path) -> list[Path]:
+    """Return Agent package dirs that contain an AGENT.md under ``agents/<name>/``."""
+    if not agents_root.is_dir():
+        return []
+    packages: list[Path] = []
+    for agent_md in sorted(agents_root.glob("*/AGENT.md")):
+        packages.append(agent_md.parent)
+    return packages
+
+
+def lint_agent_package(agent_dir: Path) -> list[LintIssue]:
+    """Validate one Agent package directory; empty list means pass."""
+    agent_md = agent_dir / "AGENT.md"
+    if not agent_md.is_file():
+        return [LintIssue("missing_agent_md", "AGENT.md is required", agent_dir)]
+
+    text = agent_md.read_text(encoding="utf-8")
+    frontmatter = _parse_frontmatter(text)
+    if frontmatter is None:
+        return [LintIssue("missing_frontmatter", "YAML frontmatter is required", agent_md)]
+
+    issues: list[LintIssue] = []
+    issues.extend(_lint_required_fields(frontmatter, agent_md))
+    if issues:
+        return issues
+
+    metadata = frontmatter["metadata"]
+    if not isinstance(metadata, dict):
+        return [LintIssue("invalid_metadata", "metadata must be a mapping", agent_md)]
+
+    issues.extend(_lint_agent_required_metadata(metadata, agent_md))
+    issues.extend(_lint_agent_enums(metadata, agent_md))
+    issues.extend(_lint_agent_skills(metadata, agent_md))
+    issues.extend(_lint_agent_path_alignment(agent_dir, frontmatter, agent_md))
+    return issues
+
+
+def lint_all_agent_packages(agents_root: Path) -> list[LintIssue]:
+    """Lint every discovered Agent package under ``agents_root``."""
+    issues: list[LintIssue] = []
+    for package in discover_agent_packages(agents_root):
+        issues.extend(lint_agent_package(package))
+    return issues
+
+
+def parse_skill_list(skills_value: Any) -> list[str] | None:
+    """Parse Agent ``metadata.skills`` into an ordered name list, or None if empty/invalid."""
+    if skills_value is None:
+        return None
+    if isinstance(skills_value, list):
+        names = [str(item).strip() for item in skills_value if str(item).strip()]
+        return names or None
+    if not isinstance(skills_value, str):
+        return None
+    names = [part.strip() for part in skills_value.split(",") if part.strip()]
+    return names or None
 
 
 def _parse_frontmatter(text: str) -> dict[str, Any] | None:
@@ -188,3 +256,115 @@ def _lint_path_alignment(
             )
         )
     return issues
+
+
+def _lint_agent_required_metadata(metadata: dict[str, Any], path: Path) -> list[LintIssue]:
+    issues: list[LintIssue] = []
+    for field in AGENT_REQUIRED_METADATA:
+        if field not in metadata or metadata[field] in (None, ""):
+            issues.append(
+                LintIssue(f"missing_{field}", f"missing required metadata.{field}", path)
+            )
+    if "capability_pillar" in metadata:
+        issues.append(
+            LintIssue(
+                "unexpected_capability_pillar",
+                "Agents must not set capability_pillar; they span pillars via skills",
+                path,
+            )
+        )
+    return issues
+
+
+def _lint_agent_enums(metadata: dict[str, Any], path: Path) -> list[LintIssue]:
+    issues: list[LintIssue] = []
+    outcome = metadata.get("primary_outcome")
+    if outcome is not None and outcome not in PRIMARY_OUTCOMES:
+        issues.append(
+            LintIssue(
+                "invalid_primary_outcome",
+                f"primary_outcome must be one of {sorted(PRIMARY_OUTCOMES)}",
+                path,
+            )
+        )
+
+    gate = metadata.get("human_review_gate")
+    if gate is not None and gate not in HUMAN_REVIEW_GATES:
+        issues.append(
+            LintIssue(
+                "invalid_human_review_gate",
+                f"human_review_gate must be one of {sorted(HUMAN_REVIEW_GATES)}",
+                path,
+            )
+        )
+
+    cost_model = metadata.get("cost_model")
+    if cost_model is not None and cost_model not in COST_MODELS:
+        issues.append(
+            LintIssue(
+                "invalid_cost_model",
+                f"cost_model must be one of {sorted(COST_MODELS)}",
+                path,
+            )
+        )
+
+    secondary = metadata.get("secondary_outcomes")
+    if secondary is not None:
+        values: list[str]
+        if isinstance(secondary, str):
+            values = [part.strip() for part in secondary.split(",") if part.strip()]
+        elif isinstance(secondary, list):
+            values = [str(item).strip() for item in secondary if str(item).strip()]
+        else:
+            values = []
+            issues.append(
+                LintIssue(
+                    "invalid_secondary_outcomes",
+                    "secondary_outcomes must be a comma-separated string or list",
+                    path,
+                )
+            )
+        for value in values:
+            if value not in PRIMARY_OUTCOMES:
+                issues.append(
+                    LintIssue(
+                        "invalid_secondary_outcomes",
+                        f"secondary_outcomes entries must be one of {sorted(PRIMARY_OUTCOMES)}",
+                        path,
+                    )
+                )
+                break
+    return issues
+
+
+def _lint_agent_skills(metadata: dict[str, Any], path: Path) -> list[LintIssue]:
+    if "skills" not in metadata or metadata["skills"] in (None, ""):
+        return []
+    names = parse_skill_list(metadata.get("skills"))
+    if names is None:
+        return [
+            LintIssue(
+                "invalid_skills",
+                "skills must list at least one Skill name (comma-separated or list)",
+                path,
+            )
+        ]
+    return []
+
+
+def _lint_agent_path_alignment(
+    agent_dir: Path,
+    frontmatter: dict[str, Any],
+    path: Path,
+) -> list[LintIssue]:
+    name = frontmatter.get("name")
+    dir_name = agent_dir.name
+    if name is not None and name != dir_name:
+        return [
+            LintIssue(
+                "name_dir_mismatch",
+                f"name {name!r} must match directory name {dir_name!r}",
+                path,
+            )
+        ]
+    return []
