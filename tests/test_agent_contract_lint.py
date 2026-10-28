@@ -46,9 +46,13 @@ def _valid_frontmatter(*, name: str = "example-agent") -> dict:
     }
 
 
-def test_discover_finds_nothing_while_agents_are_placeholder() -> None:
+def test_discover_finds_technical_findings() -> None:
     packages = discover_agent_packages(AGENTS_ROOT)
-    assert packages == []
+    assert any(p.name == "technical-findings" for p in packages)
+
+
+def test_lint_all_shipped_agents_has_no_issues() -> None:
+    assert lint_all_agent_packages(AGENTS_ROOT) == []
 
 
 def test_lint_accepts_valid_minimal_package(tmp_path: Path) -> None:

@@ -1,0 +1,12 @@
+{
+  "skills_invoked": [
+    "crawl-issue-extractor",
+    "indexability-checker",
+    "schema-validator"
+  ],
+  "evidence_ids": [
+    "ev-crawl-issue-extractor",
+    "ev-indexability-checker",
+    "ev-schema-validator"
+  ]
+}

@@ -283,6 +283,47 @@ def test_missing_stub_raises(tmp_path: Path) -> None:
         )
 
 
+def test_optional_select_skills_script_narrows_declared_list(tmp_path: Path) -> None:
+    agent_dir = _write_agent(
+        tmp_path / "agents",
+        name="fixture-agent",
+        skills="alpha-skill,beta-skill,gamma-skill",
+        human_review_gate="not_required",
+    )
+    scripts = agent_dir / "scripts"
+    scripts.mkdir()
+    (scripts / "select_skills.py").write_text(
+        "def select_skills(declared, inputs):\n"
+        "    if inputs.get('skip_beta'):\n"
+        "        return [n for n in declared if n != 'beta-skill']\n"
+        "    return list(declared)\n",
+        encoding="utf-8",
+    )
+    calls: list[str] = []
+
+    def track(name: str):
+        def _stub(_ctx: dict) -> dict:
+            calls.append(name)
+            return {"evidence_ids": [name], "evidence": []}
+
+        return _stub
+
+    result = run_agent(
+        agent_dir,
+        skill_stubs={
+            "alpha-skill": track("alpha-skill"),
+            "beta-skill": track("beta-skill"),
+            "gamma-skill": track("gamma-skill"),
+        },
+        runs_root=tmp_path / "runs",
+        observed_at="2026-10-28T12:00:00+00:00",
+        run_id="run-select-skills",
+        inputs={"skip_beta": True},
+    )
+    assert calls == ["alpha-skill", "gamma-skill"]
+    assert result.skills_invoked == ["alpha-skill", "gamma-skill"]
+
+
 def test_skill_names_rejects_undeclared_skills(tmp_path: Path) -> None:
     agent_dir = _write_agent(
         tmp_path / "agents",

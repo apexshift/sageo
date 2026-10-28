@@ -46,9 +46,11 @@ def run_agent(
 ) -> AgentRunResult:
     """Run one Agent workflow with injectable Skill stubs.
 
-    Skills run in ``AGENT.md`` metadata order (or ``skill_names`` override).
-    When ``human_review_gate: required``, the run pauses after Skills with
-    ``gate_state=awaiting_approval`` until ``resume_agent`` records a decision.
+    Skills run in ``AGENT.md`` metadata order. When ``skill_names`` is omitted,
+    an optional ``scripts/select_skills.py`` ``select_skills(declared, inputs)``
+    may narrow the list (still in declared order). An explicit ``skill_names``
+    override wins. When ``human_review_gate: required``, the run pauses after
+    Skills until ``resume_agent`` records a decision.
     """
     agent_md = agent_dir / "AGENT.md"
     if not agent_md.is_file():
@@ -64,6 +66,11 @@ def run_agent(
     if not declared:
         raise ValueError(f"AGENT.md metadata.skills must list at least one Skill: {agent_md}")
 
+    resolved_inputs = dict(inputs or {})
+    if skill_names is None:
+        selector = _load_skill_selector(agent_dir)
+        if selector is not None:
+            skill_names = selector(declared, resolved_inputs)
     ordered = _resolve_skill_order(declared, skill_names)
     gate = metadata.get("human_review_gate")
     if gate not in ("required", "not_required"):
@@ -82,7 +89,7 @@ def run_agent(
         "run_dir": str(run_dir),
         "agent_name": agent_name,
         "observed_at": observed_at,
-        "inputs": dict(inputs or {}),
+        "inputs": resolved_inputs,
     }
 
     evidence_ids: list[str] = []
@@ -99,7 +106,7 @@ def run_agent(
                 evidence.append(dict(item))
                 _append_jsonl(evidence_path, dict(item))
 
-    base_inputs = {"agent": agent_name, **dict(inputs or {})}
+    base_inputs = {"agent": agent_name, **resolved_inputs}
 
     if gate == "required":
         _append_decision(
@@ -144,7 +151,7 @@ def run_agent(
                 "evidence_ids": list(evidence_ids),
                 "gate_state": "awaiting_approval",
                 "status": "awaiting_human_review",
-                "inputs": dict(inputs or {}),
+                "inputs": resolved_inputs,
                 "human_review_gate": gate,
             },
         )
@@ -184,7 +191,7 @@ def run_agent(
             "evidence_ids": list(evidence_ids),
             "gate_state": "closed",
             "status": "completed",
-            "inputs": dict(inputs or {}),
+            "inputs": resolved_inputs,
             "human_review_gate": gate,
         },
     )
@@ -281,6 +288,27 @@ def _resolve_skill_order(
         )
     requested_set = set(requested)
     return [name for name in declared if name in requested_set]
+
+
+def _load_skill_selector(
+    agent_dir: Path,
+) -> Callable[[Sequence[str], Mapping[str, Any]], Sequence[str]] | None:
+    """Load optional ``scripts/select_skills.py`` ``select_skills`` if present."""
+    import importlib.util
+
+    script_path = agent_dir / "scripts" / "select_skills.py"
+    if not script_path.is_file():
+        return None
+    module_name = f"sageo_agent_select_skills_{agent_dir.name}"
+    spec = importlib.util.spec_from_file_location(module_name, script_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load skill selector: {script_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    selector = getattr(module, "select_skills", None)
+    if not callable(selector):
+        raise ValueError(f"select_skills(declared, inputs) is required in {script_path}")
+    return selector  # type: ignore[return-value]
 
 
 def _load_frontmatter(agent_md: Path) -> dict[str, Any]:
