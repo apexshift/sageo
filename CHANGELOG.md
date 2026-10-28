@@ -77,3 +77,9 @@ component versions: see tree `metadata.version` (typically starting at
   Skill/Agent templates.
 - Skill package contract lint and the `schema-validator` golden Skill.
 - README with locked positioning and quickstart.
+
+### Changed
+
+- Living docs refresh: README documentation table and current quickstart /
+  `make ci` layout; architecture phase status through P5 packaging; `.env.example`
+  and crawl-issue-extractor Skill prose no longer say Connectors “land in P3”.

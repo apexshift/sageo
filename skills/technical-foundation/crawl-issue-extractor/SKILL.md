@@ -23,7 +23,8 @@ findings: HTTP 4xx client errors, HTTP 5xx server errors, long redirect chains,
 timeouts, and soft-404 candidates. Soft-404 and connector failures use
 `needs_human_verification`. Remediations are owned by Agents and Orchestrator
 Human review gates. This is the only Core Skill that declares the `crawl_serp`
-connector class; live connector packs land in P3 — tests mock the seam.
+connector class; the shipped pack is `connectors/crawl-serp/` — hermetic tests
+mock the seam (no live vendor calls).
 
 ## Inputs
 
