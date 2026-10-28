@@ -1,0 +1,31 @@
+{
+  "findings": [
+    {
+      "id": "citation.nap_consistent",
+      "status": "fail",
+      "summary": "NAP consistency failed across directory listings."
+    },
+    {
+      "id": "citation.nap_conflict",
+      "status": "fail",
+      "summary": "Some listings have near-variant NAP values that need human verification."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "No listings fully matched the canonical NAP for Acme Plumbing.",
+      "source": "fixture:nap-conflict/input/listings.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "listings-nap-heuristics"
+    },
+    {
+      "claim": "Listing 'listing-name-variant' (bing-places) has near-variant NAP fields versus canonical.",
+      "source": "fixture:nap-conflict/input/listings.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Listing NAP overlaps canonical values as a near-variant (substring) rather than an exact match",
+      "method": "listings-nap-heuristics"
+    }
+  ]
+}
