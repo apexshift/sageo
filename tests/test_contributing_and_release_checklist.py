@@ -77,5 +77,8 @@ def test_first_public_release_checklist_gates_tagging() -> None:
     for phrase in required_phrases:
         assert phrase in lower, f"checklist missing {phrase!r}"
 
-    # Checklist items are actionable checkboxes.
-    assert "- [ ]" in text
+    # Checklist uses Markdown task items (open or completed).
+    assert "- [ ]" in text or "- [x]" in text
+    # First public cut is complete for v0.1.0.
+    assert "- [x] **Cut release:**" in text
+    assert "releases/tag/v0.1.0" in text
