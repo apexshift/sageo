@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://www.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fexample.com%2F/searchAnalytics/query",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "startDate": "2026-10-01",
+      "endDate": "2026-10-07",
+      "dimensions": ["query"]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "rows": [
+        {
+          "keys": ["example query"],
+          "clicks": 12,
+          "impressions": 100,
+          "ctr": 0.12,
+          "position": 4.5
+        }
+      ]
+    }
+  }
+}
