@@ -1,0 +1,11 @@
+{
+  "dimensionHeaders": [{"name": "sessionDefaultChannelGroup"}],
+  "metricHeaders": [{"name": "sessions", "type": "TYPE_INTEGER"}],
+  "rows": [
+    {
+      "dimensionValues": [{"value": "Organic Search"}],
+      "metricValues": [{"value": "42"}]
+    }
+  ],
+  "rowCount": 1
+}

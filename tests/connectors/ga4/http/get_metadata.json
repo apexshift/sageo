@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://analyticsdata.googleapis.com/v1beta/properties/123456789/metadata",
+    "headers": {},
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "name": "properties/123456789/metadata",
+      "dimensions": [
+        {"apiName": "date", "uiName": "Date", "category": "Time"}
+      ],
+      "metrics": [
+        {"apiName": "sessions", "uiName": "Sessions", "category": "Session"}
+      ]
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://analyticsdata.googleapis.com/v1beta/properties/123456789:runReport",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "dateRanges": [{"startDate": "2026-10-01", "endDate": "2026-10-07"}],
+      "dimensions": [{"name": "sessionDefaultChannelGroup"}],
+      "metrics": [{"name": "sessions"}]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "dimensionHeaders": [{"name": "sessionDefaultChannelGroup"}],
+      "metricHeaders": [{"name": "sessions", "type": "TYPE_INTEGER"}],
+      "rows": [
+        {
+          "dimensionValues": [{"value": "Organic Search"}],
+          "metricValues": [{"value": "42"}]
+        }
+      ],
+      "rowCount": 1
+    }
+  }
+}
