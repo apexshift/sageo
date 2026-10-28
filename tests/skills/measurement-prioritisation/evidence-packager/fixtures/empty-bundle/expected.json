@@ -1,0 +1,27 @@
+{
+  "package": {
+    "ready_for_review": false,
+    "finding_count": 0,
+    "evidence_count": 0,
+    "nhv_count": 0,
+    "ranked_ids": [],
+    "findings": [],
+    "evidence": []
+  },
+  "findings": [
+    {
+      "id": "package.ready",
+      "status": "fail",
+      "summary": "Evidence bundle is empty and not review-ready."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Bundled 0 findings and 0 Evidence records (0 needs_human_verification).",
+      "source": "fixture:empty-bundle/input/bundle.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "evidence-bundle-package"
+    }
+  ]
+}

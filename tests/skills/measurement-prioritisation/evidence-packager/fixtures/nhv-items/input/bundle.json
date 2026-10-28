@@ -1,0 +1,32 @@
+{
+  "findings": [
+    {
+      "id": "crawl.soft_404",
+      "status": "fail",
+      "summary": "Found 1 soft-404 candidate(s) that need human verification."
+    },
+    {
+      "id": "priority.rank",
+      "status": "pass",
+      "summary": "Top priority is 'crawl.soft_404' with score 20."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "1 of 2 crawl entries are soft-404 candidates (e.g. https://example.com/gone-soft).",
+      "source": "fixture:soft-404/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "needs_human_verification",
+      "verification_reason": "Crawl marked the URL as soft_404; confirm whether the page is a true not-found experience",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "Issue 'crawl.soft_404' score is 20 (severity 4 × impact 5).",
+      "source": "fixture:happy/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    }
+  ],
+  "ranked_ids": ["crawl.soft_404", "priority.rank"]
+}

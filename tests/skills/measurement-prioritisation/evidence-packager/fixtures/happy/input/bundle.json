@@ -1,0 +1,31 @@
+{
+  "findings": [
+    {
+      "id": "crawl.client_error",
+      "status": "fail",
+      "summary": "Found 1 HTTP 4xx client error(s) in the crawl log."
+    },
+    {
+      "id": "priority.rank",
+      "status": "pass",
+      "summary": "Top priority is 'crawl.client_error' with score 25."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "1 of 5 crawl entries returned HTTP 4xx (e.g. https://example.com/missing).",
+      "source": "fixture:http-errors/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "Issue 'crawl.client_error' score is 25 (severity 5 × impact 5).",
+      "source": "fixture:happy/input/issues.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "severity-impact-product"
+    }
+  ],
+  "ranked_ids": ["crawl.client_error", "priority.rank"]
+}

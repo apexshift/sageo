@@ -1,0 +1,71 @@
+{
+  "package": {
+    "ready_for_review": false,
+    "finding_count": 1,
+    "evidence_count": 3,
+    "nhv_count": 1,
+    "ranked_ids": [],
+    "findings": [
+      {
+        "id": "crawl.client_error",
+        "status": "fail",
+        "summary": "Found 1 HTTP 4xx client error(s) in the crawl log."
+      }
+    ],
+    "evidence": [
+      {
+        "claim": "1 of 5 crawl entries returned HTTP 4xx.",
+        "source": "fixture:http-errors/input/crawl_log.json",
+        "observed_at": "2026-10-27T12:00:00Z",
+        "confidence": "high",
+        "method": "crawl-log-heuristics"
+      },
+      {
+        "claim": "Missing source on this record.",
+        "observed_at": "2026-10-27T12:00:00Z",
+        "confidence": "high"
+      },
+      {
+        "claim": "Soft-404 needs review.",
+        "source": "fixture:soft-404/input/crawl_log.json",
+        "observed_at": "2026-10-27T12:00:00Z",
+        "confidence": "needs_human_verification"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "package.ready",
+      "status": "fail",
+      "summary": "Evidence bundle is not review-ready due to incomplete Evidence."
+    },
+    {
+      "id": "package.incomplete",
+      "status": "fail",
+      "summary": "2 Evidence record(s) are missing required fields."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Bundled 1 findings and 3 Evidence records (1 needs_human_verification).",
+      "source": "fixture:incomplete-evidence/input/bundle.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "evidence-bundle-package"
+    },
+    {
+      "claim": "Evidence record 2 is missing required field(s): source.",
+      "source": "fixture:incomplete-evidence/input/bundle.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "evidence-bundle-package"
+    },
+    {
+      "claim": "Evidence record 3 is missing required field(s): verification_reason.",
+      "source": "fixture:incomplete-evidence/input/bundle.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "evidence-bundle-package"
+    }
+  ]
+}
