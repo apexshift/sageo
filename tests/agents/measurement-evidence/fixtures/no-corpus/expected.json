@@ -1,0 +1,10 @@
+{
+  "skills_invoked": [
+    "severity-impact-scorer",
+    "evidence-packager"
+  ],
+  "evidence_ids": [
+    "ev-severity-impact-scorer",
+    "ev-evidence-packager"
+  ]
+}

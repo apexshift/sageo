@@ -1,0 +1,12 @@
+{
+  "skills_invoked": [
+    "mention-sentiment-screener",
+    "severity-impact-scorer",
+    "evidence-packager"
+  ],
+  "evidence_ids": [
+    "ev-mention-sentiment-screener",
+    "ev-severity-impact-scorer",
+    "ev-evidence-packager"
+  ]
+}
