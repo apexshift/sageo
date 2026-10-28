@@ -114,6 +114,19 @@ def test_lint_rejects_missing_frontmatter(tmp_path: Path) -> None:
     assert any(i.code == "missing_frontmatter" for i in issues)
 
 
+def test_lint_rejects_non_semver_metadata_version(tmp_path: Path) -> None:
+    fm = _valid_frontmatter()
+    fm["metadata"]["version"] = "not-a-version"
+    skill_dir = _write_skill(
+        tmp_path,
+        pillar="technical-foundation",
+        name="schema-validator",
+        frontmatter=fm,
+    )
+    issues = lint_skill_package(skill_dir)
+    assert any(i.code == "invalid_version" for i in issues)
+
+
 def test_shipped_orchestrator_package_passes_contract_lint() -> None:
     from sageo.contract_lint import lint_orchestrator_package
 

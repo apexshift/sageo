@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import yaml
+
+# Component metadata.version: MAJOR.MINOR.PATCH with optional pre-release/build.
+SEMVER_RE = re.compile(
+    r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$"
+)
 
 CAPABILITY_PILLARS = frozenset(
     {
@@ -81,6 +87,7 @@ def lint_skill_package(skill_dir: Path) -> list[LintIssue]:
         return [LintIssue("invalid_metadata", "metadata must be a mapping", skill_md)]
 
     issues.extend(_lint_required_metadata(metadata, skill_md))
+    issues.extend(_lint_semver_version(metadata, skill_md))
     issues.extend(_lint_enums(metadata, skill_md))
     issues.extend(_lint_path_alignment(skill_dir, frontmatter, metadata, skill_md))
     return issues
@@ -125,6 +132,7 @@ def lint_agent_package(agent_dir: Path) -> list[LintIssue]:
         return [LintIssue("invalid_metadata", "metadata must be a mapping", agent_md)]
 
     issues.extend(_lint_agent_required_metadata(metadata, agent_md))
+    issues.extend(_lint_semver_version(metadata, agent_md))
     issues.extend(_lint_agent_enums(metadata, agent_md))
     issues.extend(_lint_agent_skills(metadata, agent_md))
     issues.extend(_lint_agent_path_alignment(agent_dir, frontmatter, agent_md))
@@ -183,6 +191,8 @@ def lint_orchestrator_package(orchestrator_dir: Path) -> list[LintIssue]:
                 orch_md,
             )
         )
+    else:
+        issues.extend(_lint_semver_version(metadata, orch_md))
     return issues
 
 
@@ -227,6 +237,26 @@ def _lint_required_metadata(metadata: dict[str, Any], path: Path) -> list[LintIs
         if field not in metadata or metadata[field] in (None, ""):
             issues.append(LintIssue(f"missing_{field}", f"missing required metadata.{field}", path))
     return issues
+
+
+def _lint_semver_version(metadata: dict[str, Any], path: Path) -> list[LintIssue]:
+    """Fail when metadata.version is present but not a valid semver string.
+
+    Absence/empty is reported by the required-metadata helpers as
+    ``missing_version`` / ``missing_metadata_field``.
+    """
+    version = metadata.get("version")
+    if version in (None, ""):
+        return []
+    if not isinstance(version, str) or not SEMVER_RE.match(version):
+        return [
+            LintIssue(
+                "invalid_version",
+                "metadata.version must be a semver string (MAJOR.MINOR.PATCH)",
+                path,
+            )
+        ]
+    return []
 
 
 def _lint_enums(metadata: dict[str, Any], path: Path) -> list[LintIssue]:
