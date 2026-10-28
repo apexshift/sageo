@@ -1,0 +1,21 @@
+{
+  "technical-findings": {
+    "goal": "national technical diagnosis",
+    "lab_metrics": {"lcp_ms": 2500, "cls": 0.05, "inp_ms": 180}
+  },
+  "content-aio": {
+    "goal": "national content/AIO assessment",
+    "authority_inputs": {
+      "corpus_id": "auth-national",
+      "sources": ["example.com"]
+    }
+  },
+  "measurement-evidence": {
+    "goal": "prioritise and package Evidence",
+    "corpus": {
+      "id": "mentions-national",
+      "items": [{"text": "example mention"}]
+    },
+    "issue_list": [{"id": "iss-1", "summary": "national blocker"}]
+  }
+}
