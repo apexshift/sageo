@@ -1,4 +1,4 @@
-"""Release-prep seam: product 0.1.0 CHANGELOG + version alignment."""
+"""Release seams: first public 0.1.0 history + current product version."""
 
 from __future__ import annotations
 
@@ -17,11 +17,16 @@ def test_changelog_has_dated_0_1_0_section() -> None:
     assert "## [Unreleased]" in text
 
 
-def test_pyproject_version_is_0_1_0() -> None:
+def test_changelog_has_dated_0_1_1_patch_section() -> None:
+    text = CHANGELOG.read_text(encoding="utf-8")
+    assert re.search(r"^## \[0\.1\.1\] - 20\d{2}-\d{2}-\d{2}\s*$", text, re.MULTILINE)
+
+
+def test_pyproject_version_is_current_patch() -> None:
     text = PYPROJECT.read_text(encoding="utf-8")
     match = re.search(r'^version\s*=\s*"([^"]+)"', text, re.MULTILINE)
     assert match is not None
-    assert match.group(1) == "0.1.0"
+    assert match.group(1) == "0.1.1"
 
 
 def test_release_checklist_records_v0_1_0_cut_complete() -> None:

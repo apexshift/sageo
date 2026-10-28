@@ -19,6 +19,18 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-28
+
+### Fixed
+
+- CI content contract for the first-public-release checklist no longer requires
+  an open `- [ ]` task item after `v0.1.0` cut (runs #13/#14).
+
+### Changed
+
+- Record `v0.1.0` cut-release completion on the checklist and align
+  README/architecture release wording.
+
 ## [0.1.0] - 2026-10-28
 
 First public product release (`v0.1.0`). Included component versions: see tree
