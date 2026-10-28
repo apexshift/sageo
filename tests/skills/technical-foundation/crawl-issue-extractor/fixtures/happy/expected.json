@@ -1,0 +1,54 @@
+{
+  "findings": [
+    {
+      "id": "crawl.client_error",
+      "status": "pass",
+      "summary": "No HTTP 4xx client errors in the crawl log."
+    },
+    {
+      "id": "crawl.server_error",
+      "status": "pass",
+      "summary": "No HTTP 5xx server errors in the crawl log."
+    },
+    {
+      "id": "crawl.redirect_chain",
+      "status": "pass",
+      "summary": "No redirect chains exceed the maximum hop count (≤2)."
+    },
+    {
+      "id": "crawl.timeout",
+      "status": "pass",
+      "summary": "No crawl timeouts in the crawl log."
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "0 of 3 crawl entries returned HTTP 4xx.",
+      "source": "fixture:happy/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "0 of 3 crawl entries returned HTTP 5xx.",
+      "source": "fixture:happy/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "0 of 3 crawl entries exceed 2 redirect hops.",
+      "source": "fixture:happy/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    },
+    {
+      "claim": "0 of 3 crawl entries timed out.",
+      "source": "fixture:happy/input/crawl_log.json",
+      "observed_at": "2026-10-27T12:00:00Z",
+      "confidence": "high",
+      "method": "crawl-log-heuristics"
+    }
+  ]
+}

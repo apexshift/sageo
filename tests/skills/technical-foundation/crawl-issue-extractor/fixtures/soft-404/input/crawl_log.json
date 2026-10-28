@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "url": "https://example.com/",
+      "status": 200,
+      "redirect_count": 0,
+      "error": null
+    },
+    {
+      "url": "https://example.com/gone-soft",
+      "status": 200,
+      "redirect_count": 0,
+      "error": "soft_404"
+    }
+  ]
+}

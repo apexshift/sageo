@@ -1,0 +1,34 @@
+{
+  "entries": [
+    {
+      "url": "https://example.com/",
+      "status": 200,
+      "redirect_count": 0,
+      "error": null
+    },
+    {
+      "url": "https://example.com/missing",
+      "status": 404,
+      "redirect_count": 0,
+      "error": null
+    },
+    {
+      "url": "https://example.com/boom",
+      "status": 503,
+      "redirect_count": 0,
+      "error": null
+    },
+    {
+      "url": "https://example.com/old",
+      "status": 200,
+      "redirect_count": 4,
+      "error": null
+    },
+    {
+      "url": "https://example.com/slow",
+      "status": null,
+      "redirect_count": 0,
+      "error": "timeout"
+    }
+  ]
+}
