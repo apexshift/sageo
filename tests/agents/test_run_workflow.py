@@ -266,6 +266,146 @@ def test_resume_with_rejection_closes_gate(tmp_path: Path) -> None:
     assert any(e.get("kind") == "gate" and e.get("outcome") == "rejected" for e in entries)
 
 
+def _gate_resume_entry(path: Path) -> dict:
+    entries = [
+        e
+        for e in _decision_entries(path)
+        if e.get("kind") == "gate" and e.get("outcome") in {"approved", "rejected"}
+    ]
+    return entries[-1]
+
+
+def test_resume_agent_approve_with_operator_note_records_note_and_suffix(
+    tmp_path: Path,
+) -> None:
+    agent_dir = _write_agent(
+        tmp_path / "agents",
+        name="gated-agent",
+        skills="alpha-skill",
+        human_review_gate="required",
+    )
+    stubs = {
+        "alpha-skill": lambda _c: {
+            "evidence_ids": ["a"],
+            "evidence": [
+                {
+                    "id": "a",
+                    "claim": "c",
+                    "source": "s",
+                    "observed_at": "t",
+                    "confidence": "high",
+                }
+            ],
+        }
+    }
+    paused = run_agent(
+        agent_dir,
+        skill_stubs=stubs,
+        runs_root=tmp_path / "runs",
+        observed_at="2026-10-28T12:00:00+00:00",
+        run_id="run-agent-note-approve",
+    )
+    assert paused.status == "awaiting_human_review"
+
+    resumed = resume_agent(
+        "run-agent-note-approve",
+        runs_root=tmp_path / "runs",
+        approved=True,
+        observed_at="2026-10-28T12:05:00+00:00",
+        operator_note="Looks good after NAP check",
+    )
+    assert resumed.status == "completed"
+    entry = _gate_resume_entry(resumed.decision_log_path)
+    assert entry["outcome"] == "approved"
+    assert entry["inputs"]["operator_note"] == "Looks good after NAP check"
+    assert entry["rationale"].startswith(
+        "Human approved gate; Agent outputs are final"
+    )
+    assert entry["rationale"].endswith("Looks good after NAP check")
+
+
+def test_resume_agent_reject_with_operator_note_records_note_and_suffix(
+    tmp_path: Path,
+) -> None:
+    agent_dir = _write_agent(
+        tmp_path / "agents",
+        name="gated-agent",
+        skills="alpha-skill",
+        human_review_gate="required",
+    )
+    run_agent(
+        agent_dir,
+        skill_stubs={"alpha-skill": lambda _c: {"evidence_ids": ["a"], "evidence": []}},
+        runs_root=tmp_path / "runs",
+        observed_at="2026-10-28T12:00:00+00:00",
+        run_id="run-agent-note-reject",
+    )
+    rejected = resume_agent(
+        "run-agent-note-reject",
+        runs_root=tmp_path / "runs",
+        approved=False,
+        observed_at="2026-10-28T12:05:00+00:00",
+        operator_note="Need better Evidence before listing changes",
+    )
+    assert rejected.status == "rejected"
+    entry = _gate_resume_entry(rejected.decision_log_path)
+    assert entry["outcome"] == "rejected"
+    assert entry["inputs"]["operator_note"] == (
+        "Need better Evidence before listing changes"
+    )
+    assert entry["rationale"].startswith(
+        "Human rejected gate; Agent outputs are not final"
+    )
+    assert entry["rationale"].endswith(
+        "Need better Evidence before listing changes"
+    )
+
+
+def test_resume_agent_omitted_or_empty_operator_note_keeps_stock_rationale(
+    tmp_path: Path,
+) -> None:
+    agent_dir = _write_agent(
+        tmp_path / "agents",
+        name="gated-agent",
+        skills="alpha-skill",
+        human_review_gate="required",
+    )
+    stubs = {"alpha-skill": lambda _c: {"evidence_ids": ["a"], "evidence": []}}
+    cases = (
+        ("run-agent-note-omit-approve", None, True),
+        ("run-agent-note-empty-approve", "", True),
+        ("run-agent-note-omit-reject", None, False),
+        ("run-agent-note-empty-reject", "", False),
+    )
+    for run_id, note, approved in cases:
+        run_agent(
+            agent_dir,
+            skill_stubs=stubs,
+            runs_root=tmp_path / "runs",
+            observed_at="2026-10-28T12:00:00+00:00",
+            run_id=run_id,
+        )
+        kwargs: dict = {
+            "runs_root": tmp_path / "runs",
+            "approved": approved,
+            "observed_at": "2026-10-28T12:05:00+00:00",
+        }
+        if note is not None:
+            kwargs["operator_note"] = note
+        resumed = resume_agent(run_id, **kwargs)
+        entry = _gate_resume_entry(resumed.decision_log_path)
+        assert entry["outcome"] == ("approved" if approved else "rejected")
+        assert "operator_note" not in entry["inputs"]
+        if approved:
+            assert entry["rationale"] == (
+                "Human approved gate; Agent outputs are final"
+            )
+        else:
+            assert entry["rationale"] == (
+                "Human rejected gate; Agent outputs are not final"
+            )
+
+
 def test_missing_stub_raises(tmp_path: Path) -> None:
     agent_dir = _write_agent(
         tmp_path / "agents",

@@ -214,6 +214,7 @@ def resume_agent(
     runs_root: Path,
     approved: bool,
     observed_at: str,
+    operator_note: str | None = None,
 ) -> AgentRunResult:
     """Resume an Agent run paused on a required Human review gate."""
     run_dir = runs_root / run_id
@@ -232,6 +233,16 @@ def resume_agent(
 
     outcome = "approved" if approved else "rejected"
     status = "completed" if approved else "rejected"
+    note = _normalized_operator_note(operator_note)
+    inputs: dict[str, Any] = {"approved": approved, "agent": agent_name}
+    rationale = (
+        "Human approved gate; Agent outputs are final"
+        if approved
+        else "Human rejected gate; Agent outputs are not final"
+    )
+    if note is not None:
+        inputs["operator_note"] = note
+        rationale = f"{rationale} — {note}"
     _append_decision(
         decision_log_path,
         {
@@ -239,16 +250,12 @@ def resume_agent(
             "actor": "agent",
             "timestamp": observed_at,
             "kind": "gate",
-            "inputs": {"approved": approved, "agent": agent_name},
+            "inputs": inputs,
             "skills": skills_invoked,
             "outcome": outcome,
             "evidence_ids": evidence_ids,
             "human_review": outcome,
-            "rationale": (
-                "Human approved gate; Agent outputs are final"
-                if approved
-                else "Human rejected gate; Agent outputs are not final"
-            ),
+            "rationale": rationale,
         },
     )
     _write_state(
@@ -270,6 +277,14 @@ def resume_agent(
         run_dir=run_dir,
         evidence=evidence,
     )
+
+
+def _normalized_operator_note(operator_note: str | None) -> str | None:
+    """Return a non-empty note, or None when omitted/blank."""
+    if operator_note is None:
+        return None
+    stripped = operator_note.strip()
+    return stripped or None
 
 
 def _resolve_skill_order(

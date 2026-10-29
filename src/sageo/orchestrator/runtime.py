@@ -227,6 +227,7 @@ def resume(
     runs_root: Path,
     approved: bool,
     observed_at: str,
+    operator_note: str | None = None,
 ) -> RunResult:
     """Resume a run stopped on a Human review gate."""
     run_dir = runs_root / run_id
@@ -238,6 +239,19 @@ def resume(
         raise ValueError(f"run {run_id!r} is not awaiting Human review approval")
 
     paused_agent = state.get("paused_agent")
+    note = _normalized_operator_note(operator_note)
+    inputs: dict[str, Any] = {
+        "paused_agent": paused_agent,
+        "approved": approved,
+    }
+    rationale = (
+        "Human approved gate; Orchestrator resumes"
+        if approved
+        else "Human rejected gate; Orchestrator stops"
+    )
+    if note is not None:
+        inputs["operator_note"] = note
+        rationale = f"{rationale} — {note}"
     _append_decision(
         decision_log_path,
         {
@@ -245,17 +259,13 @@ def resume(
             "actor": "orchestrator",
             "timestamp": observed_at,
             "kind": "gate",
-            "inputs": {"paused_agent": paused_agent, "approved": approved},
+            "inputs": inputs,
             "skills": [],
             "agents": [paused_agent] if paused_agent else [],
             "outcome": "approved" if approved else "rejected",
             "evidence_ids": list(state.get("evidence_refs", [])),
             "human_review": "approved" if approved else "rejected",
-            "rationale": (
-                "Human approved gate; Orchestrator resumes"
-                if approved
-                else "Human rejected gate; Orchestrator stops"
-            ),
+            "rationale": rationale,
         },
     )
 
@@ -527,6 +537,15 @@ def _request_dict(request: RunRequest) -> dict[str, Any]:
         "reach": request.reach,
         "playbook": request.playbook,
     }
+
+
+def _normalized_operator_note(operator_note: str | None) -> str | None:
+    """Return a non-empty note, or None when omitted/blank."""
+    if operator_note is None:
+        return None
+    stripped = operator_note.strip()
+    return stripped or None
+
 
 
 def _append_decision(path: Path, entry: Mapping[str, Any]) -> None:

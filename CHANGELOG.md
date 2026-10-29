@@ -19,6 +19,11 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 
 ## [Unreleased]
 
+### Added
+
+- Optional `operator_note` on Orchestrator `resume` and Agent `resume_agent`
+  gate Decisions (`inputs.operator_note` + rationale suffix when set).
+
 ### Changed
 
 - Orchestrator `thin_audit` schedules `local-reach` after content/AIO and before
