@@ -1,0 +1,109 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #111;
+  color: #f2f2f2;
+}
+
+.view {
+  min-height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#view-wizard {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.runtime-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.runtime-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.runtime-form input {
+  padding: 0.55rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1b1b1b;
+  color: inherit;
+}
+
+button {
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background: #2a2a2a;
+  color: inherit;
+  cursor: pointer;
+}
+
+button.primary {
+  background: #2f6fed;
+  border-color: #2f6fed;
+}
+
+.errors {
+  color: #ff8e8e;
+  padding-left: 1.1rem;
+  min-height: 1.25rem;
+}
+
+#view-shell {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  border-right: 1px solid #333;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.run-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.footer-btn {
+  margin-top: auto;
+}
+
+.stage {
+  padding: 1.5rem;
+}
+
+.empty-state {
+  display: grid;
+  place-items: start;
+  gap: 0.75rem;
+}
+
+.muted {
+  color: #aaa;
+}

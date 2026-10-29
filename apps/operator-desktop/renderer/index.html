@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    />
+    <title>SageO Operator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section id="view-wizard" class="view hidden" aria-label="First-run wizard">
+        <header>
+          <h1>Set up SageO runtime</h1>
+          <p>Point at your local checkout and Python interpreter.</p>
+        </header>
+        <form id="runtime-form" class="runtime-form">
+          <label>
+            Checkout root
+            <input id="checkout_root" name="checkout_root" type="text" required />
+          </label>
+          <label>
+            Python interpreter
+            <input id="interpreter" name="interpreter" type="text" required />
+          </label>
+          <label>
+            runs_root (optional override)
+            <input id="runs_root" name="runs_root" type="text" placeholder="defaults to &lt;checkout&gt;/runs" />
+          </label>
+          <ul id="wizard-errors" class="errors" aria-live="polite"></ul>
+          <button id="finish-btn" type="submit">Finish</button>
+        </form>
+      </section>
+
+      <section id="view-shell" class="view hidden" aria-label="App shell">
+        <aside class="sidebar">
+          <div class="sidebar-header">
+            <strong>Runs</strong>
+            <button id="new-run-btn" type="button" class="primary">New Run</button>
+          </div>
+          <ul id="run-list" class="run-list"></ul>
+          <button id="settings-btn" type="button" class="footer-btn">Settings</button>
+        </aside>
+        <main class="stage">
+          <div id="stage-empty" class="empty-state">
+            <p>No Runs yet.</p>
+            <button id="empty-new-run-btn" type="button" class="primary">New Run</button>
+          </div>
+          <div id="stage-new-run" class="hidden">
+            <h2>New Run</h2>
+            <p class="muted">Chrome only in this slice — submit ships later.</p>
+          </div>
+          <div id="stage-settings" class="hidden">
+            <h2>Settings</h2>
+            <p class="muted">Same runtime fields as the first-run wizard.</p>
+            <form id="settings-form" class="runtime-form">
+              <label>
+                Checkout root
+                <input id="settings_checkout_root" name="checkout_root" type="text" required />
+              </label>
+              <label>
+                Python interpreter
+                <input id="settings_interpreter" name="interpreter" type="text" required />
+              </label>
+              <label>
+                runs_root (optional override)
+                <input id="settings_runs_root" name="runs_root" type="text" />
+              </label>
+              <ul id="settings-errors" class="errors" aria-live="polite"></ul>
+              <button type="submit">Save</button>
+            </form>
+          </div>
+        </main>
+      </section>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

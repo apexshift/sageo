@@ -24,7 +24,10 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 - Operator runtime bridge (`sageo.operator`): validate local checkout +
   interpreter ready-check, start thin_audit Runs from Property refs / Reach /
   optional goal, list Runs, Progress snapshots, active-run watch, and gate
-  resume with optional `operator_note` (hermetic Agent fakes; no Electron UI).
+  resume with optional `operator_note` (hermetic Agent fakes).
+- Electron operator desktop scaffold (`apps/operator-desktop`): first-run
+  wizard, Settings, empty app shell; main process ready-check via
+  `python -m sageo.operator` (session config + `validate_runtime`).
 - Optional `operator_note` on Orchestrator `resume` and Agent `resume_agent`
   gate Decisions (`inputs.operator_note` + rationale suffix when set).
 
