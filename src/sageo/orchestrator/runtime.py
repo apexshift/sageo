@@ -396,6 +396,8 @@ def _execute_from(
             "property_refs": dict(request.property_refs),
             "primary_outcome": request.primary_outcome,
             "reach": request.reach,
+            "observed_at": observed_at,
+            "agent": name,
         }
         outcome: Mapping[str, Any] = {"evidence_ids": [], "status": "completed"}
         if agent.execute is not None:
@@ -404,6 +406,15 @@ def _execute_from(
         for evidence_id in ev_ids:
             if evidence_id not in evidence_refs:
                 evidence_refs.append(str(evidence_id))
+        for item in outcome.get("evidence") or []:
+            if not isinstance(item, Mapping):
+                continue
+            row = dict(item)
+            row.setdefault("agent", name)
+            if "id" not in row and ev_ids:
+                row["id"] = str(ev_ids[0])
+            _append_jsonl(evidence_path, row)
+            evidence.append(row)
         status = str(outcome.get("status") or "completed")
         statuses.append({"name": name, "status": status})
 

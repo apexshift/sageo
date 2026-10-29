@@ -8,4 +8,7 @@ contextBridge.exposeInMainWorld("sageoOperator", {
   startThinAudit: (fields) =>
     ipcRenderer.invoke("operator:start-thin-audit", fields),
   getProgress: (runId) => ipcRenderer.invoke("operator:get-progress", runId),
+  listFindings: (opts) => ipcRenderer.invoke("operator:list-findings", opts),
+  getReview: (runId) => ipcRenderer.invoke("operator:get-review", runId),
+  resumeRun: (opts) => ipcRenderer.invoke("operator:resume-run", opts),
 });

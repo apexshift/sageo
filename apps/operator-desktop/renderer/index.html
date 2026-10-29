@@ -83,12 +83,81 @@
           </div>
 
           <div id="stage-progress" class="hidden">
-            <h2>Progress</h2>
+            <div class="stage-nav">
+              <h2>Progress</h2>
+              <div class="stage-links">
+                <button type="button" data-stage="findings" class="linkish">Findings</button>
+                <button type="button" data-stage="review" class="linkish">Review</button>
+              </div>
+            </div>
             <ul id="progress-warnings" class="warnings" aria-live="polite"></ul>
             <p id="progress-gate" class="muted"></p>
             <ul id="progress-agents" class="agent-checklist"></ul>
             <button id="go-to-review-btn" type="button" class="primary hidden">Go to Review</button>
+            <button id="go-to-findings-btn" type="button" class="hidden">Open Findings</button>
             <p id="progress-idle" class="muted hidden">Run is idle.</p>
+          </div>
+
+          <div id="stage-findings" class="hidden">
+            <div class="stage-nav">
+              <h2>Findings</h2>
+              <div class="stage-links">
+                <button type="button" data-stage="progress" class="linkish">Progress</button>
+                <button type="button" data-stage="review" class="linkish">Review</button>
+              </div>
+            </div>
+            <div class="filters">
+              <label>
+                Confidence
+                <select id="filter-confidence">
+                  <option value="">all</option>
+                  <option value="high">high</option>
+                  <option value="medium">medium</option>
+                  <option value="low">low</option>
+                  <option value="needs_human_verification">NHV</option>
+                </select>
+              </label>
+              <label>
+                Agent
+                <select id="filter-agent">
+                  <option value="">all</option>
+                </select>
+              </label>
+            </div>
+            <div class="master-detail">
+              <ul id="findings-list" class="findings-list"></ul>
+              <div id="findings-detail" class="findings-detail">
+                <p class="muted">Select a finding.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="stage-review" class="hidden">
+            <div class="stage-nav">
+              <h2>Review</h2>
+              <div class="stage-links">
+                <button type="button" data-stage="progress" class="linkish">Progress</button>
+                <button type="button" data-stage="findings" class="linkish">Findings</button>
+              </div>
+            </div>
+            <div id="review-empty" class="hidden muted"></div>
+            <div id="review-body" class="hidden">
+              <p id="review-paused"></p>
+              <pre id="review-decision" class="decision-block"></pre>
+              <div>
+                <strong>Evidence</strong>
+                <ul id="review-evidence-links"></ul>
+              </div>
+              <label>
+                Operator note (optional)
+                <textarea id="operator-note" rows="3"></textarea>
+              </label>
+              <div class="review-actions">
+                <button id="approve-btn" type="button" class="primary">Approve</button>
+                <button id="reject-btn" type="button">Reject</button>
+              </div>
+            </div>
+            <p id="review-result" class="muted" aria-live="polite"></p>
           </div>
 
           <div id="stage-settings" class="hidden">

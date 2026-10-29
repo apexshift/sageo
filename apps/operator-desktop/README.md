@@ -25,4 +25,5 @@ SAGEO_BOOTSTRAP_PYTHON=/path/to/.venv/bin/python npm start
 - Main-process config helpers: `npm test` (no Electron window)
 
 New Run Start maps to `python -m sageo.operator start-thin-audit`. Progress
-polls `get-progress` (~1s) until `gate_state` is closed.
+polls `get-progress` (~1s) until `gate_state` is closed. Findings uses
+`list-findings`; Review uses `get-review` + `resume-run`.

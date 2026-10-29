@@ -145,3 +145,49 @@ def test_cli_start_list_progress_flow(tmp_path: Path) -> None:
     assert progress.returncode == 0
     snap = json.loads(progress.stdout)
     assert snap["paused_agent"] == "content-aio"
+
+    findings = _run_cli(
+        [
+            "list-findings",
+            "--runs-root",
+            str(runs_root),
+            "--run-id",
+            "run-cli",
+        ]
+    )
+    assert findings.returncode == 0
+    finding_rows = json.loads(findings.stdout)
+    assert finding_rows
+    assert finding_rows[0]["agent"] == "technical-findings"
+
+    review = _run_cli(
+        ["get-review", "--runs-root", str(runs_root), "--run-id", "run-cli"]
+    )
+    assert review.returncode == 0
+    review_payload = json.loads(review.stdout)
+    assert review_payload["gate_open"] is True
+    assert review_payload["paused_agent"] == "content-aio"
+
+    resumed = _run_cli(
+        [
+            "resume-run",
+            "--checkout-root",
+            str(checkout),
+            "--runs-root",
+            str(runs_root),
+            "--run-id",
+            "run-cli",
+            "--approved",
+            "true",
+            "--operator-note",
+            "Ship it",
+            "--observed-at",
+            "2026-10-29T12:05:00+00:00",
+        ]
+    )
+    assert resumed.returncode == 0
+    resume_payload = json.loads(resumed.stdout)
+    assert resume_payload["run_id"] == "run-cli"
+    assert "Ship it" in (
+        runs_root / "run-cli" / "decision_log.jsonl"
+    ).read_text(encoding="utf-8")
