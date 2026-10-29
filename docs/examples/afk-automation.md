@@ -26,17 +26,20 @@ a practitioner resumes with recorded approval.
 
 ## Practical pattern (shipped primitives)
 
-1. **Start a Run** via Orchestrator `run` / Agent `run_agent` with the right
-   Reach and playbook (see [national audit](national-audit.md) e2e for the
-   composition pattern).
+1. **Start a Run** via Orchestrator `run` / Agent `run_agent`, or the operator
+   bridge / desktop New Run (`python -m sageo.operator start-thin-audit`) with
+   Property refs + Reach (see [national audit](national-audit.md) and
+   [operator desktop](operator-desktop.md)).
 2. **Poll or wait** until `gate_state == awaiting_approval` (or status
-   `awaiting_human_review`).
+   `awaiting_human_review`) — Progress watch in the desktop, or bridge
+   `get-progress` / watch.
 3. **Notify a human** (email, chat, ticket — your ops layer; not shipped as a
-   SageO Connector).
-4. **Resume** with `resume` / `resume_agent` and `approved=True` only after
-   review; rejection stops the Run without executing the gated continuation.
+   SageO Connector). The desktop Review stage is the local interactive path.
+4. **Resume** with `resume` / `resume_agent` / bridge `resume-run` and
+   `approved=True` only after review (optional `operator_note`); rejection
+   stops the Run without executing the gated continuation.
 5. **Read** `runs/<id>/evidence.jsonl`, `decision_log.jsonl`, and
-   `metrics.json`.
+   `metrics.json` (Findings in the desktop browses Evidence).
 
 ### Sketch (illustration only)
 

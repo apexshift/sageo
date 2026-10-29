@@ -1,9 +1,8 @@
 # Contributing to SageO
 
 Thanks for your interest in SageO. This document is the contribution contract
-after the first public release. Until that tag exists, treat the repository as
-**read-only / not ready for external contrib** and prefer opening issues for
-discussion.
+after the first public release
+([`v0.1.0`](https://github.com/apexshift/sageo/releases/tag/v0.1.0)).
 
 For ethics and positioning, also read:
 
@@ -18,11 +17,9 @@ file wins** when they differ.
 
 ## Timing
 
-**External pull requests are accepted only after the first public release
-tag** (post-P5 implement). The repo may be public earlier as read-only.
-
-Maintainers complete the five-phase bootstrap (P1–P5) on the master map.
-Until the first public release tag exists, please open issues rather than PRs.
+**External pull requests are accepted** after the first public release tag
+(`v0.1.0`). Prefer opening an issue before substantial Skill or docs work so
+maintainers can confirm fit.
 
 ## How to propose work
 
@@ -44,8 +41,9 @@ After the first public release tag, outsiders may contribute:
 - **Skills** under the correct capability pillar
 - **Docs and fixes** (typos, clarifications, test goldens for existing Skills)
 
-**Agents, Orchestrator, and Connectors remain maintainer-only** until a later
-policy revisits that scope.
+**Agents, Orchestrator, Connectors, the operator bridge (`sageo.operator`), and
+`apps/operator-desktop` remain maintainer-only** until a later policy revisits
+that scope.
 
 ## Skill contribution bar
 

@@ -87,6 +87,36 @@ class StartThinAuditResult:
     result: RunResult
 
 
+@dataclass(frozen=True)
+class FindingRow:
+    """One Evidence row for the Findings master–detail list."""
+
+    id: str
+    title: str
+    agent: str
+    confidence: str
+    claim: str
+    source: str
+    method: str | None
+    observed_at: str
+    verification_reason: str | None
+    is_nhv: bool
+
+
+@dataclass(frozen=True)
+class ReviewSnapshot:
+    """Review stage: Human review gate context or empty copy."""
+
+    run_id: str
+    gate_state: str
+    paused_agent: str | None
+    gate_open: bool
+    empty_message: str | None
+    decision: dict[str, Any] | None
+    evidence_ids: tuple[str, ...]
+    linked_findings: tuple[FindingRow, ...]
+
+
 def validate_runtime(
     *,
     checkout_root: Path | str,
@@ -271,10 +301,22 @@ def load_thin_audit_agents(checkout_root: Path | str) -> list[AgentSpec]:
         primary = str(meta.get("primary_outcome") or "SEO")
 
         def _execute(
-            _ctx: Mapping[str, Any], *, _name: str = name
+            ctx: Mapping[str, Any], *, _name: str = name
         ) -> dict[str, Any]:
+            evidence_id = f"{_name}-ev"
+            observed = str(ctx.get("observed_at") or "")
             return {
-                "evidence_ids": [f"{_name}-ev"],
+                "evidence_ids": [evidence_id],
+                "evidence": [
+                    {
+                        "id": evidence_id,
+                        "claim": f"{_name} finding",
+                        "source": f"agent:{_name}",
+                        "observed_at": observed,
+                        "confidence": "high",
+                        "agent": _name,
+                    }
+                ],
                 "status": "completed",
             }
 
@@ -331,6 +373,69 @@ def get_progress(runs_root: Path | str, run_id: str) -> ProgressSnapshot:
     return _progress_from_state(run_id, state)
 
 
+def list_findings(
+    runs_root: Path | str,
+    run_id: str,
+    *,
+    confidence: str | None = None,
+    agent: str | None = None,
+) -> list[FindingRow]:
+    """List Evidence rows for Findings (default: show all)."""
+    run_dir = Path(runs_root) / run_id
+    rows = [_finding_from_evidence(item) for item in _load_evidence_rows(run_dir)]
+    conf = (confidence or "").strip()
+    if conf in {"nhv", "needs_human_verification"}:
+        rows = [row for row in rows if row.is_nhv]
+    elif conf:
+        rows = [row for row in rows if row.confidence == conf]
+    agent_filter = (agent or "").strip()
+    if agent_filter:
+        rows = [row for row in rows if row.agent == agent_filter]
+    return rows
+
+
+def get_review(runs_root: Path | str, run_id: str) -> ReviewSnapshot:
+    """Review snapshot: gate context + linked Evidence, or empty copy."""
+    run_dir = Path(runs_root) / run_id
+    state = _load_state(run_dir / "state.json")
+    gate_state = str(state.get("gate_state") or "closed")
+    paused = state.get("paused_agent")
+    paused_agent = str(paused) if paused else None
+    gate_open = gate_state == "awaiting_approval"
+    if not gate_open:
+        return ReviewSnapshot(
+            run_id=run_id,
+            gate_state=gate_state,
+            paused_agent=None,
+            gate_open=False,
+            empty_message="No Human review gate is open for this Run.",
+            decision=None,
+            evidence_ids=(),
+            linked_findings=(),
+        )
+
+    decision = _latest_gate_stop_decision(run_dir)
+    evidence_ids = tuple(
+        str(eid)
+        for eid in (decision or {}).get("evidence_ids")
+        or state.get("evidence_refs")
+        or []
+    )
+    all_findings = list_findings(runs_root, run_id)
+    id_set = set(evidence_ids)
+    linked = tuple(row for row in all_findings if row.id in id_set)
+    return ReviewSnapshot(
+        run_id=run_id,
+        gate_state=gate_state,
+        paused_agent=paused_agent,
+        gate_open=True,
+        empty_message=None,
+        decision=decision,
+        evidence_ids=evidence_ids,
+        linked_findings=linked,
+    )
+
+
 def resume_run(
     runs_root: Path | str,
     run_id: str,
@@ -345,6 +450,27 @@ def resume_run(
         run_id,
         agents,
         runs_root=Path(runs_root),
+        approved=approved,
+        observed_at=observed_at,
+        operator_note=operator_note,
+    )
+
+
+def resume_run_from_checkout(
+    *,
+    checkout_root: Path | str,
+    runs_root: Path | str,
+    run_id: str,
+    approved: bool,
+    observed_at: str,
+    operator_note: str | None = None,
+) -> RunResult:
+    """Resume a gate using thin_audit Agents loaded from the checkout."""
+    agents = load_thin_audit_agents(Path(checkout_root))
+    return resume_run(
+        runs_root,
+        run_id,
+        agents=agents,
         approved=approved,
         observed_at=observed_at,
         operator_note=operator_note,
@@ -405,6 +531,68 @@ def _load_state(state_path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError(f"state.json must be an object: {state_path}")
     return data
+
+
+def _load_evidence_rows(run_dir: Path) -> list[dict[str, Any]]:
+    path = run_dir / "evidence.jsonl"
+    if not path.is_file():
+        return []
+    rows: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            item = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(item, dict):
+            rows.append(item)
+    return rows
+
+
+def _finding_from_evidence(item: Mapping[str, Any]) -> FindingRow:
+    claim = str(item.get("claim") or "")
+    confidence = str(item.get("confidence") or "")
+    is_nhv = confidence == "needs_human_verification"
+    reason = item.get("verification_reason")
+    method = item.get("method")
+    evidence_id = str(item.get("id") or item.get("evidence_id") or claim or "unknown")
+    agent = str(item.get("agent") or "unknown")
+    return FindingRow(
+        id=evidence_id,
+        title=claim or evidence_id,
+        agent=agent,
+        confidence=confidence,
+        claim=claim,
+        source=str(item.get("source") or ""),
+        method=str(method) if method is not None else None,
+        observed_at=str(item.get("observed_at") or ""),
+        verification_reason=str(reason) if reason is not None else None,
+        is_nhv=is_nhv,
+    )
+
+
+def _latest_gate_stop_decision(run_dir: Path) -> dict[str, Any] | None:
+    path = run_dir / "decision_log.jsonl"
+    if not path.is_file():
+        return None
+    latest: dict[str, Any] | None = None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(entry, dict):
+            continue
+        if entry.get("kind") != "gate":
+            continue
+        outcome = entry.get("outcome")
+        human = entry.get("human_review")
+        if outcome == "awaiting_approval" or human == "awaiting_approval":
+            latest = entry
+    return latest
 
 
 def _progress_from_state(run_id: str, state: Mapping[str, Any]) -> ProgressSnapshot:

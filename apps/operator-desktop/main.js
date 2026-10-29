@@ -160,6 +160,67 @@ ipcMain.handle("operator:get-progress", async (_event, runId) => {
   ]).payload;
 });
 
+ipcMain.handle("operator:list-findings", async (_event, { runId, confidence, agent }) => {
+  const config = activeConfig();
+  const runsRoot = runsRootFor(config);
+  if (!runsRoot || !runId) return [];
+  const args = [
+    "list-findings",
+    "--runs-root",
+    runsRoot,
+    "--run-id",
+    String(runId),
+  ];
+  if (confidence) args.push("--confidence", String(confidence));
+  if (agent) args.push("--agent", String(agent));
+  const result = runOperatorCommand(activeInterpreter(), args);
+  return Array.isArray(result.payload) ? result.payload : [];
+});
+
+ipcMain.handle("operator:get-review", async (_event, runId) => {
+  const config = activeConfig();
+  const runsRoot = runsRootFor(config);
+  if (!runsRoot || !runId) return null;
+  return runOperatorCommand(activeInterpreter(), [
+    "get-review",
+    "--runs-root",
+    runsRoot,
+    "--run-id",
+    String(runId),
+  ]).payload;
+});
+
+ipcMain.handle("operator:resume-run", async (_event, { runId, approved, operator_note }) => {
+  const config = activeConfig();
+  const runsRoot = runsRootFor(config);
+  if (!config || !runsRoot || !runId) {
+    return { ok: false, errors: ["runtime config or run missing"] };
+  }
+  const args = [
+    "resume-run",
+    "--checkout-root",
+    config.checkout_root,
+    "--runs-root",
+    runsRoot,
+    "--run-id",
+    String(runId),
+    "--approved",
+    approved ? "true" : "false",
+  ];
+  if (operator_note && String(operator_note).trim()) {
+    args.push("--operator-note", String(operator_note).trim());
+  }
+  const result = runOperatorCommand(activeInterpreter(), args);
+  if (!result.payload || !result.payload.run_id) {
+    return {
+      ok: false,
+      errors: (result.payload && result.payload.errors) || ["resume-run failed"],
+      payload: result.payload,
+    };
+  }
+  return { ok: true, errors: [], ...result.payload };
+});
+
 app.whenReady().then(() => {
   createWindow();
   app.on("activate", () => {

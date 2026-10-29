@@ -10,12 +10,17 @@ from pathlib import Path
 from typing import Any
 
 from sageo.operator.bridge import (
+    FindingRow,
     ProgressSnapshot,
     ReadyCheckResult,
+    ReviewSnapshot,
     RunSummary,
     StartThinAuditResult,
     get_progress,
+    get_review,
+    list_findings,
     list_runs,
+    resume_run_from_checkout,
     start_thin_audit_from_checkout,
     validate_runtime,
     watch_run_progress,
@@ -85,6 +90,34 @@ def _start_dict(result: StartThinAuditResult) -> dict[str, Any]:
     }
 
 
+def _finding_dict(row: FindingRow) -> dict[str, Any]:
+    return {
+        "id": row.id,
+        "title": row.title,
+        "agent": row.agent,
+        "confidence": row.confidence,
+        "claim": row.claim,
+        "source": row.source,
+        "method": row.method,
+        "observed_at": row.observed_at,
+        "verification_reason": row.verification_reason,
+        "is_nhv": row.is_nhv,
+    }
+
+
+def _review_dict(review: ReviewSnapshot) -> dict[str, Any]:
+    return {
+        "run_id": review.run_id,
+        "gate_state": review.gate_state,
+        "paused_agent": review.paused_agent,
+        "gate_open": review.gate_open,
+        "empty_message": review.empty_message,
+        "decision": review.decision,
+        "evidence_ids": list(review.evidence_ids),
+        "linked_findings": [_finding_dict(row) for row in review.linked_findings],
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m sageo.operator")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -128,6 +161,24 @@ def main(argv: list[str] | None = None) -> int:
     watch_p.add_argument("--runs-root", required=True)
     watch_p.add_argument("--run-id", required=True)
     watch_p.add_argument("--poll-interval", type=float, default=1.0)
+
+    findings_p = sub.add_parser("list-findings", help="Findings Evidence rows")
+    findings_p.add_argument("--runs-root", required=True)
+    findings_p.add_argument("--run-id", required=True)
+    findings_p.add_argument("--confidence", default=None)
+    findings_p.add_argument("--agent", default=None)
+
+    review_p = sub.add_parser("get-review", help="Review gate snapshot")
+    review_p.add_argument("--runs-root", required=True)
+    review_p.add_argument("--run-id", required=True)
+
+    resume_p = sub.add_parser("resume-run", help="Approve/reject gate via resume")
+    resume_p.add_argument("--checkout-root", required=True)
+    resume_p.add_argument("--runs-root", required=True)
+    resume_p.add_argument("--run-id", required=True)
+    resume_p.add_argument("--approved", required=True, choices=["true", "false"])
+    resume_p.add_argument("--operator-note", default=None)
+    resume_p.add_argument("--observed-at", default=None)
 
     args = parser.parse_args(argv)
 
@@ -198,6 +249,46 @@ def main(argv: list[str] | None = None) -> int:
             json.dump(_progress_dict(snap), sys.stdout, sort_keys=True)
             sys.stdout.write("\n")
             sys.stdout.flush()
+        return 0
+
+    if args.command == "list-findings":
+        rows = [
+            _finding_dict(row)
+            for row in list_findings(
+                args.runs_root,
+                args.run_id,
+                confidence=args.confidence,
+                agent=args.agent,
+            )
+        ]
+        json.dump(rows, sys.stdout, indent=2, sort_keys=True)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.command == "get-review":
+        review = get_review(args.runs_root, args.run_id)
+        json.dump(_review_dict(review), sys.stdout, indent=2, sort_keys=True)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.command == "resume-run":
+        observed = args.observed_at or datetime.now(timezone.utc).isoformat()
+        result = resume_run_from_checkout(
+            checkout_root=args.checkout_root,
+            runs_root=args.runs_root,
+            run_id=args.run_id,
+            approved=args.approved == "true",
+            observed_at=observed,
+            operator_note=args.operator_note,
+        )
+        payload = {
+            "run_id": result.run_id,
+            "gate_state": result.gate_state,
+            "review": _review_dict(get_review(args.runs_root, args.run_id)),
+            "progress": _progress_dict(get_progress(args.runs_root, args.run_id)),
+        }
+        json.dump(payload, sys.stdout, indent=2, sort_keys=True)
+        sys.stdout.write("\n")
         return 0
 
     return 2

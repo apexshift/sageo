@@ -5,11 +5,10 @@ contribution contract is [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 
 ## Status
 
-- **Before first public release tag:** repository is read-only / not ready for
-  external PRs. Open issues for discussion.
-- **After first public release tag:** external contributions follow
-  [`CONTRIBUTING.md`](../CONTRIBUTING.md) (Skills + docs/fixes; Agents /
-  Orchestrator / Connectors maintainer-only).
+- **First public release:** [`v0.1.0`](https://github.com/apexshift/sageo/releases/tag/v0.1.0)
+  is cut. External contributions follow [`CONTRIBUTING.md`](../CONTRIBUTING.md)
+  (Skills + docs/fixes; Agents / Orchestrator / Connectors / operator bridge /
+  operator-desktop maintainer-only).
 
 ## Related
 

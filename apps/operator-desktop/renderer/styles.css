@@ -175,3 +175,142 @@ button.primary {
   background: #1b1b1b;
   color: inherit;
 }
+
+.stage-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.stage-links {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button.linkish {
+  background: transparent;
+  border: none;
+  color: #8cb4ff;
+  text-decoration: underline;
+  padding: 0.2rem 0.35rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.filters label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.filters select {
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1b1b1b;
+  color: inherit;
+}
+
+.master-detail {
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) 1fr;
+  gap: 1rem;
+  min-height: 18rem;
+}
+
+.findings-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 28rem;
+}
+
+.finding-row {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #2a2a2a;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.finding-row.selected {
+  background: #1a2740;
+}
+
+.finding-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.finding-meta {
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.findings-detail {
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.badge-nhv {
+  background: #5a3b00;
+  border-color: #f0c36d;
+  color: #ffe6a8;
+  font-weight: 700;
+}
+
+.badge-conf-high {
+  background: #1e3d2f;
+  border-color: #3d8f66;
+}
+
+.badge-conf-medium,
+.badge-conf-low {
+  background: #3d351e;
+  border-color: #a8903d;
+}
+
+.nhv-reason {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 6px;
+  background: #3a2a00;
+  border: 1px solid #f0c36d;
+}
+
+.decision-block {
+  background: #161616;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.75rem;
+  overflow: auto;
+  max-height: 12rem;
+  font-size: 0.78rem;
+}
+
+.review-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1b1b1b;
+  color: inherit;
+  font: inherit;
+}

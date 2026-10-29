@@ -43,12 +43,24 @@ sageo/
 ├── agents/          # reference Agent contracts (four shipped)
 ├── orchestrator/    # Orchestrator contract + thin_audit routing
 ├── connectors/      # read-only MCP packs (gsc, ga4, crawl-serp)
-├── src/sageo/       # shared Python library (lint, runtimes, metrics, …)
+├── src/sageo/       # shared Python library (operator bridge, lint, runtimes, metrics, …)
+├── apps/            # operator-desktop Electron shell (wizard → Progress → Findings → Review)
 ├── runs/            # local run artifacts (gitignored contents)
 └── tests/           # Skill/Agent goldens, e2e, contract lint, …
 ```
 
 Governance prose lives at `docs/architecture.md`, `docs/ethical-accountability-policy.md`, root `CONTRIBUTING.md`, and `docs/contribution-guidelines.md`. Worked examples live under `docs/examples/`. `docs/adr/` may appear later when Architecture Decision Records are recorded.
+
+## Operator surface (local desktop)
+
+The shipped operator path shells over a **local SageO checkout + Python interpreter**:
+
+| Piece | Role |
+| --- | --- |
+| `sageo.operator` bridge / CLI | Validate runtime, start `thin_audit` from **Property refs** + Reach, list Runs, Progress snapshots/watch, Findings (Evidence browse), Review snapshot, gate `resume` with optional `operator_note` |
+| `apps/operator-desktop` | Electron UI: first-run wizard, Settings, New Run → Progress → Findings (master–detail, NHV) → Review (Approve/Reject) |
+
+The desktop does not invent a parallel approval store: Review calls bridge resume into the Orchestrator Decision log. Findings rows are Evidence for the Run (UI “Findings”), not a separate durable table. Walkthrough: [`docs/examples/operator-desktop.md`](examples/operator-desktop.md).
 
 Skill path: `skills/<pillar-slug>/<skill-name>/` with required `SKILL.md`. Optional conventional subdirs: `scripts/`, `references/`, `assets/`. Directory name equals frontmatter `name`. No parallel `skill.yaml`; no README-as-contract.
 
@@ -60,7 +72,9 @@ Every factual claim carries **Evidence** with required fields `claim`, `source`,
 
 `needs_human_verification` is allowed when a source is missing, inaccessible, contradictory, or outside connector scope — never as a shortcut to skip a fetch that was possible — or for inherently judgmental calls even when data exists.
 
-Agents and the Orchestrator write append-only **Decision log** entries (`decision_id`, actor, timestamp, inputs, skills, outcome, evidence_ids, human_review, rationale). Artifacts live under a **Run directory** `runs/<id>/` as JSON/JSONL. No in-place edits; corrections are new entries that supersede prior ids. `runs/` contents are gitignored; keep the placeholder committed.
+**Property refs** identify the site/properties for a Run (`site_url` required; optional `gsc_property`, `ga4_property`). Empty optionals are omitted from the mapping.
+
+Agents and the Orchestrator write append-only **Decision log** entries (`decision_id`, actor, timestamp, inputs, skills, outcome, evidence_ids, human_review, rationale). Artifacts live under a **Run directory** `runs/<id>/` as JSON/JSONL. No in-place edits; corrections are new entries that supersede prior ids. `runs/` contents are gitignored; keep the placeholder committed. Orchestrator execute paths persist Agent Evidence into the Run’s `evidence.jsonl` so operator Findings can browse it.
 
 ## Human review gates (two layers)
 

@@ -26,10 +26,10 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
   optional goal, list Runs, Progress snapshots, active-run watch, and gate
   resume with optional `operator_note` (hermetic Agent fakes).
 - Electron operator desktop (`apps/operator-desktop`): first-run wizard,
-  Settings, New Run → Start thin_audit → Progress (sidebar badges, gate CTA,
-  ~1s Progress refresh via bridge `get-progress`), warn-and-allow for missing
-  GSC/GA4 credentials; main process uses `python -m sageo.operator` for
-  ready-check, Start, list-runs, and Progress.
+  Settings, New Run → Progress → Findings (master–detail, NHV, filters) →
+  Review (Approve/Reject with optional note; Reject confirm); bridge
+  `list_findings` / `get_review` / `resume_run_from_checkout`; Orchestrator
+  persists Agent execute Evidence into the Run directory.
 - Optional `operator_note` on Orchestrator `resume` and Agent `resume_agent`
   gate Decisions (`inputs.operator_note` + rationale suffix when set).
 
@@ -37,6 +37,10 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 
 - Orchestrator `thin_audit` schedules `local-reach` after content/AIO and before
   measurement when Reach=`local`; omits it for national, global, or unset Reach.
+- Living docs refresh: glossary **Property refs** / operator **Finding**; README
+  and architecture cover `apps/operator-desktop` + `sageo.operator`; examples
+  add operator-desktop walkthrough; CONTRIBUTING timing and maintainer-only
+  surfaces match `v0.1.0` + the operator shell.
 
 ## [0.1.1] - 2026-10-28
 

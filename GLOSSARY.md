@@ -44,9 +44,17 @@ _Avoid_: geographic, local reach (those are Reach or the Local / Geographic capa
 The local, national, or global scope of a piece of work. Not an Outcome pillar.
 _Avoid_: GEO (when you mean geographic scope)
 
+**Property refs**:
+The operator-facing site/property identifiers for a Run, stored as Orchestrator `property_refs`: required `site_url`, optional `gsc_property` and `ga4_property`. Empty optionals are omitted from the mapping.
+_Avoid_: target, property pack (when you mean this mapping); site (when you mean the full refs object, not only the URL)
+
 **Evidence**:
 A structured claim record with `claim`, `source`, `observed_at`, and `confidence` (`high` | `medium` | `low` | `needs_human_verification`). When confidence is `needs_human_verification`, include `verification_reason`.
 _Avoid_: proof, citation (when you mean the Evidence contract)
+
+**Finding** (operator UI):
+A browse row in the operator Findings surface; it maps to an **Evidence** record for the Run (plus Agent context). Not a separate durable store beside Evidence.
+_Avoid_: inventing a parallel Finding table that drops Evidence fields; treating Skill-local “findings” JSON as the Run browse contract
 
 **Decision log**:
 An append-only record of an Agent or Orchestrator decision (`decision_id`, actor, inputs, skills, outcome, evidence_ids, human_review, rationale), stored under a Run directory.

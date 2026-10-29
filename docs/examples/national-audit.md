@@ -31,12 +31,20 @@ From each Agent’s contract and the e2e expected fixture:
 3. **measurement-evidence** — `mention-sentiment-screener`,
    `severity-impact-scorer`, `evidence-packager`
 
+## Property refs
+
+Start the Run with Orchestrator **Property refs**: required `site_url`,
+optional `gsc_property` and `ga4_property` (empty optionals omitted). The
+operator desktop New Run form and `sageo.operator start-thin-audit` collect the
+same mapping.
+
 ## Human review gate
 
 `measurement-evidence` declares `human_review_gate: required`. After its Skills
 run (including `evidence-packager`), the Human review gate pauses until a
 human approves in the Decision log. The Orchestrator surfaces that pause
-end-to-end; approval resumes the Run.
+end-to-end; approval resumes the Run (CLI/`resume`, bridge `resume-run`, or
+the desktop [Review](operator-desktop.md) stage).
 
 Nothing publishes to or mutates a live site without that gate and recorded
 approval. Findings are Evidence-backed diagnostics for a practitioner — SageO
