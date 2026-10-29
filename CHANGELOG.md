@@ -25,9 +25,11 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
   interpreter ready-check, start thin_audit Runs from Property refs / Reach /
   optional goal, list Runs, Progress snapshots, active-run watch, and gate
   resume with optional `operator_note` (hermetic Agent fakes).
-- Electron operator desktop scaffold (`apps/operator-desktop`): first-run
-  wizard, Settings, empty app shell; main process ready-check via
-  `python -m sageo.operator` (session config + `validate_runtime`).
+- Electron operator desktop (`apps/operator-desktop`): first-run wizard,
+  Settings, New Run → Start thin_audit → Progress (sidebar badges, gate CTA,
+  ~1s Progress refresh via bridge `get-progress`), warn-and-allow for missing
+  GSC/GA4 credentials; main process uses `python -m sageo.operator` for
+  ready-check, Start, list-runs, and Progress.
 - Optional `operator_note` on Orchestrator `resume` and Agent `resume_agent`
   gate Decisions (`inputs.operator_note` + rationale suffix when set).
 

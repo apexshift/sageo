@@ -107,3 +107,71 @@ button.primary {
 .muted {
   color: #aaa;
 }
+
+.warnings {
+  color: #f0c36d;
+  padding-left: 1.1rem;
+  min-height: 1.25rem;
+}
+
+.run-row {
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.55rem 0.65rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.run-row.selected {
+  border-color: #2f6fed;
+}
+
+.run-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.run-meta {
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.badge {
+  display: inline-block;
+  width: fit-content;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid #555;
+}
+
+.badge-awaiting_approval {
+  background: #5a3b00;
+  border-color: #f0c36d;
+  color: #ffe6a8;
+}
+
+.badge-completed {
+  background: #1e3d2f;
+  border-color: #3d8f66;
+}
+
+.badge-rejected,
+.badge-ask_human {
+  background: #3d1e1e;
+  border-color: #a85b5b;
+}
+
+.agent-checklist {
+  padding-left: 1.1rem;
+}
+
+.runtime-form select {
+  padding: 0.55rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1b1b1b;
+  color: inherit;
+}
