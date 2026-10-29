@@ -27,3 +27,6 @@ SAGEO_BOOTSTRAP_PYTHON=/path/to/.venv/bin/python npm start
 New Run Start maps to `python -m sageo.operator start-thin-audit`. Progress
 polls `get-progress` (~1s) until `gate_state` is closed. Findings uses
 `list-findings`; Review uses `get-review` + `resume-run`.
+
+Operator loop walkthrough:
+[`docs/examples/operator-desktop.md`](../../docs/examples/operator-desktop.md).

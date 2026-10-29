@@ -37,6 +37,10 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 
 - Orchestrator `thin_audit` schedules `local-reach` after content/AIO and before
   measurement when Reach=`local`; omits it for national, global, or unset Reach.
+- Living docs refresh: glossary **Property refs** / operator **Finding**; README
+  and architecture cover `apps/operator-desktop` + `sageo.operator`; examples
+  add operator-desktop walkthrough; CONTRIBUTING timing and maintainer-only
+  surfaces match `v0.1.0` + the operator shell.
 
 ## [0.1.1] - 2026-10-28
 

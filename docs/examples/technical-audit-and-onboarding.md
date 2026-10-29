@@ -14,7 +14,8 @@ indexability, schema, and CWV blockers as one workflow.
 | 3 | Read a Skill contract | [Skill layout](skill-layout.md) (`schema-validator`) |
 | 4 | Run a technical Agent golden | `pytest tests/agents/technical-findings/test_golden.py` |
 | 5 | See a full audit with gate + metrics | [National audit](national-audit.md) e2e |
-| 6 | Configure Connectors only if needed | [Connector credentials](connector-credentials.md) |
+| 6 | Optional: local operator UI | [Operator desktop](operator-desktop.md) |
+| 7 | Configure Connectors only if needed | [Connector credentials](connector-credentials.md) |
 
 There is no separate `onboarding` Agent. Onboarding is this practitioner path
 over the shipped tree.

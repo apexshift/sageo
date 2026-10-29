@@ -21,10 +21,11 @@ Details live in [`docs/architecture.md`](docs/architecture.md).
 | Doc | Description |
 | --- | --- |
 | [`docs/architecture.md`](docs/architecture.md) | Layers, pillars, Evidence / Decision logs, Human review gates, phase status |
-| [`GLOSSARY.md`](GLOSSARY.md) | Domain vocabulary (Skill, Agent, Orchestrator, Evidence, Reach, GEO, …) |
-| [`docs/examples/`](docs/examples/) | Honest walkthroughs (national/local audits, onboarding, AFK limits, …) |
+| [`GLOSSARY.md`](GLOSSARY.md) | Domain vocabulary (Skill, Agent, Orchestrator, Evidence, Property refs, Reach, GEO, …) |
+| [`docs/examples/`](docs/examples/) | Honest walkthroughs (national/local audits, onboarding, operator desktop, AFK limits, …) |
+| [`apps/operator-desktop/README.md`](apps/operator-desktop/README.md) | Electron operator shell over a local checkout (wizard → Progress → Findings → Review) |
 | [`docs/ethical-accountability-policy.md`](docs/ethical-accountability-policy.md) | White-hat rules, Evidence, gates, read-only Connectors |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | When external PRs open, Skill contribution bar, maintainer-only surfaces |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | External PRs after `v0.1.0`, Skill contribution bar, maintainer-only surfaces |
 | [`docs/first-public-release-checklist.md`](docs/first-public-release-checklist.md) | Maintainer gate before the first public tag |
 | [`CHANGELOG.md`](CHANGELOG.md) | Product release notes (Keep a Changelog) |
 | [`docs/templates/`](docs/templates/) | Copy-ready `SKILL.md` / `AGENT.md` contracts |
@@ -45,6 +46,10 @@ make ci                # lint + contract lint + pytest (hermetic)
 For pytest alone: `make test`. Walkthroughs: [`docs/examples/`](docs/examples/).
 A good first Skill to read: [`skills/technical-foundation/schema-validator/`](skills/technical-foundation/schema-validator/).
 
+Optional local operator UI (after install): see
+[`apps/operator-desktop/README.md`](apps/operator-desktop/README.md) and
+[`docs/examples/operator-desktop.md`](docs/examples/operator-desktop.md).
+
 ## Repository layout
 
 ```text
@@ -55,8 +60,8 @@ sageo/
 ├── agents/          # technical-findings, content-aio, measurement-evidence, local-reach
 ├── orchestrator/    # Orchestrator contract + thin_audit routing
 ├── connectors/      # read-only MCP packs: gsc, ga4, crawl-serp
-├── src/sageo/       # shared Python library (lint, runtimes, metrics, …)
-├── apps/            # operator-desktop Electron shell (wizard + app chrome)
+├── src/sageo/       # shared Python library (operator bridge, lint, runtimes, metrics, …)
+├── apps/            # operator-desktop Electron shell (wizard → Progress → Findings → Review)
 ├── runs/            # local run artifacts (gitignored contents)
 └── tests/           # goldens, e2e/national-audit, contract lint, …
 ```
