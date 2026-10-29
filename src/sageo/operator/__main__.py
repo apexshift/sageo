@@ -1,14 +1,25 @@
-"""CLI for Electron main: JSON ready-check and launch decisions."""
+"""CLI for Electron main: JSON ready-check, launch, Start, Progress."""
 
 from __future__ import annotations
 
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from sageo.operator.bridge import ReadyCheckResult, validate_runtime
+from sageo.operator.bridge import (
+    ProgressSnapshot,
+    ReadyCheckResult,
+    RunSummary,
+    StartThinAuditResult,
+    get_progress,
+    list_runs,
+    start_thin_audit_from_checkout,
+    validate_runtime,
+    watch_run_progress,
+)
 from sageo.operator.session import (
     RuntimeConfig,
     finish_wizard,
@@ -44,6 +55,36 @@ def _decision_dict(decision: Any) -> dict[str, Any]:
     }
 
 
+def _summary_dict(row: RunSummary) -> dict[str, Any]:
+    return {
+        "run_id": row.run_id,
+        "goal": row.goal,
+        "site_host": row.site_host,
+        "reach": row.reach,
+        "status": row.status,
+    }
+
+
+def _progress_dict(snap: ProgressSnapshot) -> dict[str, Any]:
+    return {
+        "run_id": snap.run_id,
+        "gate_state": snap.gate_state,
+        "paused_agent": snap.paused_agent,
+        "empty_schedule": snap.empty_schedule,
+        "agents": [{"name": a.name, "status": a.status} for a in snap.agents],
+    }
+
+
+def _start_dict(result: StartThinAuditResult) -> dict[str, Any]:
+    return {
+        "run_id": result.run_id,
+        "run_dir": str(result.run_dir),
+        "gate_state": result.gate_state,
+        "warnings": list(result.warnings),
+        "progress": _progress_dict(get_progress(result.run_dir.parent, result.run_id)),
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m sageo.operator")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -61,6 +102,32 @@ def main(argv: list[str] | None = None) -> int:
     finish_p.add_argument("--checkout-root", required=True)
     finish_p.add_argument("--interpreter", required=True)
     finish_p.add_argument("--runs-root", default=None)
+
+    start_p = sub.add_parser("start-thin-audit", help="Start thin_audit from New Run")
+    start_p.add_argument("--checkout-root", required=True)
+    start_p.add_argument("--runs-root", required=True)
+    start_p.add_argument("--site-url", required=True)
+    start_p.add_argument("--reach", default="national")
+    start_p.add_argument("--goal", default=None)
+    start_p.add_argument("--gsc-property", default=None)
+    start_p.add_argument("--ga4-property", default=None)
+    start_p.add_argument("--run-id", default=None)
+    start_p.add_argument("--observed-at", default=None)
+
+    list_p = sub.add_parser("list-runs", help="List Runs for sidebar")
+    list_p.add_argument("--runs-root", required=True)
+
+    progress_p = sub.add_parser("get-progress", help="Progress snapshot")
+    progress_p.add_argument("--runs-root", required=True)
+    progress_p.add_argument("--run-id", required=True)
+
+    watch_p = sub.add_parser(
+        "watch-progress",
+        help="Emit Progress JSON lines until idle",
+    )
+    watch_p.add_argument("--runs-root", required=True)
+    watch_p.add_argument("--run-id", required=True)
+    watch_p.add_argument("--poll-interval", type=float, default=1.0)
 
     args = parser.parse_args(argv)
 
@@ -92,6 +159,46 @@ def main(argv: list[str] | None = None) -> int:
         json.dump(_decision_dict(decision), sys.stdout, indent=2, sort_keys=True)
         sys.stdout.write("\n")
         return 0 if decision.view == "shell" else 1
+
+    if args.command == "start-thin-audit":
+        observed = args.observed_at or datetime.now(timezone.utc).isoformat()
+        result = start_thin_audit_from_checkout(
+            checkout_root=args.checkout_root,
+            runs_root=args.runs_root,
+            site_url=args.site_url,
+            reach=args.reach,
+            goal=args.goal,
+            gsc_property=args.gsc_property,
+            ga4_property=args.ga4_property,
+            run_id=args.run_id,
+            observed_at=observed,
+        )
+        json.dump(_start_dict(result), sys.stdout, indent=2, sort_keys=True)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.command == "list-runs":
+        rows = [_summary_dict(row) for row in list_runs(args.runs_root)]
+        json.dump(rows, sys.stdout, indent=2, sort_keys=True)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.command == "get-progress":
+        snap = get_progress(args.runs_root, args.run_id)
+        json.dump(_progress_dict(snap), sys.stdout, indent=2, sort_keys=True)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.command == "watch-progress":
+        for snap in watch_run_progress(
+            args.runs_root,
+            args.run_id,
+            poll_interval=args.poll_interval,
+        ):
+            json.dump(_progress_dict(snap), sys.stdout, sort_keys=True)
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+        return 0
 
     return 2
 

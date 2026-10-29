@@ -1,6 +1,6 @@
 /**
- * Electron main: launch gating and Finish/Settings call sageo.operator.
- * Ready-check is bridge-only (no parallel checkout/import validation).
+ * Electron main: launch gating, New Run Start, Progress via sageo.operator.
+ * Ready-check and Start go through the bridge (no parallel validation).
  */
 const { app, BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
@@ -24,6 +24,24 @@ function createWindow() {
 
 function bootstrapPython() {
   return process.env.SAGEO_BOOTSTRAP_PYTHON || process.env.PYTHON || "python3";
+}
+
+function activeInterpreter() {
+  const cfgPath = configPath(app);
+  const config = loadConfig(cfgPath);
+  return (config && config.interpreter) || bootstrapPython();
+}
+
+function activeConfig() {
+  return loadConfig(configPath(app));
+}
+
+function runsRootFor(config) {
+  if (!config) return null;
+  if (config.runs_root && String(config.runs_root).trim()) {
+    return String(config.runs_root).trim();
+  }
+  return path.join(config.checkout_root, "runs");
 }
 
 function finishOrSaveArgs(cfgPath, fields) {
@@ -54,10 +72,8 @@ ipcMain.handle("operator:get-launch", async () => {
       ready: null,
     };
   }
-  // Prefer saved interpreter; fall back to bootstrap for resolve-launch.
   const config = loadConfig(cfgPath);
-  const interpreter =
-    (config && config.interpreter) || bootstrapPython();
+  const interpreter = (config && config.interpreter) || bootstrapPython();
   return runOperatorCommand(interpreter, [
     "resolve-launch",
     "--config-path",
@@ -77,9 +93,71 @@ ipcMain.handle("operator:save-settings", async (_event, fields) => {
   return runOperatorCommand(interpreter, args).payload;
 });
 
-ipcMain.handle("operator:list-runs-empty", async () => {
-  // #164: empty Run list chrome only; listing ships with later tickets.
-  return [];
+ipcMain.handle("operator:list-runs", async () => {
+  const config = activeConfig();
+  const runsRoot = runsRootFor(config);
+  if (!runsRoot) return [];
+  const result = runOperatorCommand(activeInterpreter(), [
+    "list-runs",
+    "--runs-root",
+    runsRoot,
+  ]);
+  return Array.isArray(result.payload) ? result.payload : [];
+});
+
+ipcMain.handle("operator:start-thin-audit", async (_event, fields) => {
+  const config = activeConfig();
+  if (!config) {
+    return {
+      ok: false,
+      errors: ["runtime config missing or invalid"],
+      warnings: [],
+    };
+  }
+  const runsRoot = runsRootFor(config);
+  const args = [
+    "start-thin-audit",
+    "--checkout-root",
+    config.checkout_root,
+    "--runs-root",
+    runsRoot,
+    "--site-url",
+    String(fields.site_url || ""),
+    "--reach",
+    String(fields.reach || "national"),
+  ];
+  if (fields.goal && String(fields.goal).trim()) {
+    args.push("--goal", String(fields.goal).trim());
+  }
+  if (fields.gsc_property && String(fields.gsc_property).trim()) {
+    args.push("--gsc-property", String(fields.gsc_property).trim());
+  }
+  if (fields.ga4_property && String(fields.ga4_property).trim()) {
+    args.push("--ga4-property", String(fields.ga4_property).trim());
+  }
+  const result = runOperatorCommand(activeInterpreter(), args);
+  if (!result.payload || !result.payload.run_id) {
+    return {
+      ok: false,
+      errors: result.payload.errors || ["start-thin-audit failed"],
+      warnings: [],
+      payload: result.payload,
+    };
+  }
+  return { ok: true, errors: [], ...result.payload };
+});
+
+ipcMain.handle("operator:get-progress", async (_event, runId) => {
+  const config = activeConfig();
+  const runsRoot = runsRootFor(config);
+  if (!runsRoot || !runId) return null;
+  return runOperatorCommand(activeInterpreter(), [
+    "get-progress",
+    "--runs-root",
+    runsRoot,
+    "--run-id",
+    String(runId),
+  ]).payload;
 });
 
 app.whenReady().then(() => {

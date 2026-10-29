@@ -3,15 +3,36 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import time
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Iterator, Mapping as MappingABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 from urllib.parse import urlparse
 
+import yaml
+
 from sageo.orchestrator import AgentSpec, RunRequest, RunResult, resume, run
+
+# Locked thin_audit roster: AGENT.md directory name → Orchestrator pipeline_role.
+THIN_AUDIT_PIPELINE_ROLES: Mapping[str, str] = {
+    "technical-findings": "technical",
+    "content-aio": "content_aio",
+    "local-reach": "local_reach",
+    "measurement-evidence": "measurement",
+}
+
+GSC_CREDENTIAL_KEYS: tuple[str, ...] = (
+    "GSC_CLIENT_EMAIL",
+    "GSC_PRIVATE_KEY",
+    "GSC_PROPERTY_URL",
+)
+GA4_CREDENTIAL_KEYS: tuple[str, ...] = (
+    "GA4_PROPERTY_ID",
+    "GA4_CREDENTIALS_JSON",
+)
 
 
 @dataclass(frozen=True)
@@ -53,6 +74,17 @@ class ProgressSnapshot:
     paused_agent: str | None
     agents: tuple[AgentProgress, ...]
     empty_schedule: bool
+
+
+@dataclass(frozen=True)
+class StartThinAuditResult:
+    """Outcome of starting a thin_audit Run from the operator New Run form."""
+
+    run_id: str
+    run_dir: Path
+    gate_state: str
+    warnings: tuple[str, ...]
+    result: RunResult
 
 
 def validate_runtime(
@@ -97,6 +129,34 @@ def validate_runtime(
         interpreter=interp,
         runs_root=resolved_runs,
     )
+
+
+def connector_credential_warnings(
+    *,
+    gsc_property: str | None,
+    ga4_property: str | None,
+    env: Mapping[str, str | None] | None = None,
+) -> tuple[str, ...]:
+    """Warn (do not block) when Connector property ids lack env credentials."""
+    environ: MappingABC[str, str | None]
+    if env is None:
+        environ = os.environ
+    else:
+        environ = env
+    warnings: list[str] = []
+    gsc = _optional_ref(gsc_property)
+    if gsc is not None and not _env_has_all(environ, GSC_CREDENTIAL_KEYS):
+        warnings.append(
+            "GSC property set without Connector credentials; Start allowed — "
+            "Skills may emit needs_human_verification Evidence."
+        )
+    ga4 = _optional_ref(ga4_property)
+    if ga4 is not None and not _env_has_all(environ, GA4_CREDENTIAL_KEYS):
+        warnings.append(
+            "GA4 property set without Connector credentials; Start allowed — "
+            "Skills may emit needs_human_verification Evidence."
+        )
+    return tuple(warnings)
 
 
 def start_thin_audit_run(
@@ -148,6 +208,92 @@ def start_thin_audit_run(
         observed_at=observed_at,
         run_id=run_id,
     )
+
+
+def start_thin_audit_from_checkout(
+    *,
+    checkout_root: Path | str,
+    runs_root: Path | str,
+    site_url: str,
+    observed_at: str,
+    reach: str = "national",
+    goal: str | None = None,
+    gsc_property: str | None = None,
+    ga4_property: str | None = None,
+    run_id: str | None = None,
+    env: Mapping[str, str | None] | None = None,
+) -> StartThinAuditResult:
+    """Start thin_audit using Agent packages under ``checkout_root/agents``.
+
+    Agent ``execute`` callables are hermetic placeholders (no live Skills).
+    ``human_review_gate`` is read from each AGENT.md so Progress/gates match
+    the shipped contracts. Returns credential warnings without blocking Start.
+    """
+    warnings = connector_credential_warnings(
+        gsc_property=gsc_property,
+        ga4_property=ga4_property,
+        env=env,
+    )
+    agents = load_thin_audit_agents(Path(checkout_root))
+    result = start_thin_audit_run(
+        runs_root=runs_root,
+        site_url=site_url,
+        agents=agents,
+        observed_at=observed_at,
+        reach=reach,
+        goal=goal,
+        gsc_property=gsc_property,
+        ga4_property=ga4_property,
+        run_id=run_id,
+    )
+    return StartThinAuditResult(
+        run_id=result.run_id,
+        run_dir=result.run_dir,
+        gate_state=result.gate_state,
+        warnings=warnings,
+        result=result,
+    )
+
+
+def load_thin_audit_agents(checkout_root: Path | str) -> list[AgentSpec]:
+    """Build thin_audit AgentSpecs from ``agents/`` under the checkout."""
+    agents_root = Path(checkout_root) / "agents"
+    loaded: list[AgentSpec] = []
+    for name, role in THIN_AUDIT_PIPELINE_ROLES.items():
+        agent_dir = agents_root / name
+        agent_md = agent_dir / "AGENT.md"
+        if not agent_md.is_file():
+            continue
+        meta = _agent_metadata(agent_md)
+        gate = str(meta.get("human_review_gate") or "not_required")
+        if gate not in {"required", "not_required"}:
+            gate = "not_required"
+        primary = str(meta.get("primary_outcome") or "SEO")
+
+        def _execute(
+            _ctx: Mapping[str, Any], *, _name: str = name
+        ) -> dict[str, Any]:
+            return {
+                "evidence_ids": [f"{_name}-ev"],
+                "status": "completed",
+            }
+
+        loaded.append(
+            AgentSpec(
+                name=name,
+                primary_outcome=primary,
+                when_to_use=frozenset({"thin_audit"}),
+                human_review_gate=gate,  # type: ignore[arg-type]
+                pipeline_role=role,  # type: ignore[arg-type]
+                execute=_execute,
+            )
+        )
+    if not loaded:
+        raise ValueError(
+            f"no thin_audit Agents found under {agents_root} "
+            f"(expected one of {sorted(THIN_AUDIT_PIPELINE_ROLES)})"
+        )
+    return loaded
 
 
 def list_runs(runs_root: Path | str) -> list[RunSummary]:
@@ -336,6 +482,29 @@ def _optional_ref(value: str | None) -> str | None:
         return None
     stripped = value.strip()
     return stripped or None
+
+
+def _env_has_all(
+    env: MappingABC[str, str | None], keys: Sequence[str]
+) -> bool:
+    return all((env.get(key) or "").strip() for key in keys)
+
+
+def _agent_metadata(agent_md: Path) -> dict[str, Any]:
+    text = agent_md.read_text(encoding="utf-8")
+    if not text.startswith("---"):
+        raise ValueError(f"AGENT.md YAML frontmatter is required: {agent_md}")
+    rest = text[3:]
+    end = rest.find("\n---")
+    if end < 0:
+        raise ValueError(f"AGENT.md YAML frontmatter is required: {agent_md}")
+    data = yaml.safe_load(rest[:end])
+    if not isinstance(data, dict):
+        raise ValueError(f"AGENT.md frontmatter must be a mapping: {agent_md}")
+    meta = data.get("metadata")
+    if not isinstance(meta, dict):
+        return {}
+    return meta
 
 
 def _interpreter_import_sageo_error(interpreter: Path) -> str | None:

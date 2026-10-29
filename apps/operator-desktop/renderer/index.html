@@ -48,10 +48,49 @@
             <p>No Runs yet.</p>
             <button id="empty-new-run-btn" type="button" class="primary">New Run</button>
           </div>
+
           <div id="stage-new-run" class="hidden">
             <h2>New Run</h2>
-            <p class="muted">Chrome only in this slice — submit ships later.</p>
+            <form id="new-run-form" class="runtime-form">
+              <label>
+                site_url (required)
+                <input id="site_url" name="site_url" type="url" required placeholder="https://example.com/" />
+              </label>
+              <label>
+                gsc_property (optional)
+                <input id="gsc_property" name="gsc_property" type="text" />
+              </label>
+              <label>
+                ga4_property (optional)
+                <input id="ga4_property" name="ga4_property" type="text" />
+              </label>
+              <label>
+                Reach
+                <select id="reach" name="reach">
+                  <option value="national" selected>national</option>
+                  <option value="local">local</option>
+                  <option value="global">global</option>
+                </select>
+              </label>
+              <label>
+                Goal (optional)
+                <input id="goal" name="goal" type="text" placeholder="thin_audit {site_url} ({reach})" />
+              </label>
+              <ul id="new-run-warnings" class="warnings" aria-live="polite"></ul>
+              <ul id="new-run-errors" class="errors" aria-live="polite"></ul>
+              <button type="submit" class="primary">Start</button>
+            </form>
           </div>
+
+          <div id="stage-progress" class="hidden">
+            <h2>Progress</h2>
+            <ul id="progress-warnings" class="warnings" aria-live="polite"></ul>
+            <p id="progress-gate" class="muted"></p>
+            <ul id="progress-agents" class="agent-checklist"></ul>
+            <button id="go-to-review-btn" type="button" class="primary hidden">Go to Review</button>
+            <p id="progress-idle" class="muted hidden">Run is idle.</p>
+          </div>
+
           <div id="stage-settings" class="hidden">
             <h2>Settings</h2>
             <p class="muted">Same runtime fields as the first-run wizard.</p>

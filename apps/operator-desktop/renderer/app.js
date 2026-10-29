@@ -1,4 +1,4 @@
-/* Renderer: wizard vs shell chrome. No Run submit in #164. */
+/* Renderer: wizard, New Run → Progress, Settings. */
 
 const wizardView = document.getElementById("view-wizard");
 const shellView = document.getElementById("view-shell");
@@ -7,9 +7,20 @@ const settingsErrors = document.getElementById("settings-errors");
 const runList = document.getElementById("run-list");
 const stageEmpty = document.getElementById("stage-empty");
 const stageNewRun = document.getElementById("stage-new-run");
+const stageProgress = document.getElementById("stage-progress");
 const stageSettings = document.getElementById("stage-settings");
+const progressGate = document.getElementById("progress-gate");
+const progressAgents = document.getElementById("progress-agents");
+const progressWarnings = document.getElementById("progress-warnings");
+const goToReviewBtn = document.getElementById("go-to-review-btn");
+const progressIdle = document.getElementById("progress-idle");
+const newRunWarnings = document.getElementById("new-run-warnings");
+const newRunErrors = document.getElementById("new-run-errors");
 
 let currentConfig = null;
+let selectedRunId = null;
+let progressTimer = null;
+let lastStartWarnings = [];
 
 function show(el) {
   el.classList.remove("hidden");
@@ -31,9 +42,11 @@ function renderErrors(node, errors) {
 function setStage(name) {
   hide(stageEmpty);
   hide(stageNewRun);
+  hide(stageProgress);
   hide(stageSettings);
   if (name === "empty") show(stageEmpty);
   if (name === "new-run") show(stageNewRun);
+  if (name === "progress") show(stageProgress);
   if (name === "settings") show(stageSettings);
 }
 
@@ -53,6 +66,7 @@ function fillRuntimeForm(prefix, config) {
 }
 
 function showWizard(decision) {
+  stopProgressWatch();
   hide(shellView);
   show(wizardView);
   currentConfig = decision.config;
@@ -60,19 +74,108 @@ function showWizard(decision) {
   renderErrors(wizardErrors, decision.errors || []);
 }
 
+function statusBadge(status) {
+  const span = document.createElement("span");
+  span.className = `badge badge-${status || "unknown"}`;
+  span.textContent = status || "unknown";
+  return span;
+}
+
+async function refreshSidebar(selectId) {
+  const runs = (await window.sageoOperator.listRuns()) || [];
+  runList.innerHTML = "";
+  for (const row of runs) {
+    const li = document.createElement("li");
+    li.className = "run-row";
+    if (row.run_id === selectId) li.classList.add("selected");
+    li.dataset.runId = row.run_id;
+    const title = document.createElement("div");
+    title.className = "run-title";
+    title.textContent = row.goal || row.run_id;
+    const meta = document.createElement("div");
+    meta.className = "run-meta";
+    meta.textContent = [row.site_host, row.reach].filter(Boolean).join(" · ");
+    li.appendChild(title);
+    li.appendChild(meta);
+    li.appendChild(statusBadge(row.status));
+    li.addEventListener("click", () => openProgress(row.run_id));
+    runList.appendChild(li);
+  }
+  return runs;
+}
+
 async function showShell(decision) {
   hide(wizardView);
   show(shellView);
   currentConfig = decision.config;
   fillRuntimeForm("settings_", decision.config);
-  const runs = (await window.sageoOperator.listRuns()) || [];
-  runList.innerHTML = "";
-  for (const row of runs) {
-    const li = document.createElement("li");
-    li.textContent = row.goal || row.run_id;
-    runList.appendChild(li);
+  const runs = await refreshSidebar(selectedRunId);
+  if (!runs.length) {
+    selectedRunId = null;
+    setStage("empty");
+  } else if (selectedRunId) {
+    await openProgress(selectedRunId);
+  } else {
+    setStage("empty");
   }
-  setStage("empty");
+}
+
+function renderProgress(snap) {
+  if (!snap) return;
+  renderErrors(progressWarnings, lastStartWarnings);
+  progressGate.textContent = `gate_state: ${snap.gate_state}`;
+  progressAgents.innerHTML = "";
+  if (snap.empty_schedule) {
+    const li = document.createElement("li");
+    li.textContent = "No Agents scheduled (ask_human / empty).";
+    progressAgents.appendChild(li);
+  } else {
+    for (const agent of snap.agents || []) {
+      const li = document.createElement("li");
+      li.textContent = `${agent.name} — ${agent.status}`;
+      progressAgents.appendChild(li);
+    }
+  }
+  if (snap.gate_state === "awaiting_approval" && snap.paused_agent) {
+    goToReviewBtn.textContent = `Go to Review (${snap.paused_agent})`;
+    show(goToReviewBtn);
+    hide(progressIdle);
+  } else {
+    hide(goToReviewBtn);
+    if (snap.gate_state === "closed") show(progressIdle);
+    else hide(progressIdle);
+  }
+}
+
+function stopProgressWatch() {
+  if (progressTimer) {
+    clearInterval(progressTimer);
+    progressTimer = null;
+  }
+}
+
+function startProgressWatch(runId) {
+  stopProgressWatch();
+  const tick = async () => {
+    const snap = await window.sageoOperator.getProgress(runId);
+    renderProgress(snap);
+    await refreshSidebar(runId);
+    if (!snap || snap.gate_state === "closed") {
+      stopProgressWatch();
+    }
+  };
+  tick();
+  progressTimer = setInterval(tick, 1000);
+}
+
+async function openProgress(runId, warnings) {
+  selectedRunId = runId;
+  if (warnings !== undefined) {
+    lastStartWarnings = warnings || [];
+  }
+  setStage("progress");
+  await refreshSidebar(runId);
+  startProgressWatch(runId);
 }
 
 async function boot() {
@@ -114,11 +217,47 @@ document.getElementById("settings-form").addEventListener("submit", async (event
   }
 });
 
-document.getElementById("new-run-btn").addEventListener("click", () => setStage("new-run"));
-document.getElementById("empty-new-run-btn").addEventListener("click", () => setStage("new-run"));
+document.getElementById("new-run-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  renderErrors(newRunErrors, []);
+  renderErrors(newRunWarnings, []);
+  const fields = {
+    site_url: document.getElementById("site_url").value,
+    gsc_property: document.getElementById("gsc_property").value,
+    ga4_property: document.getElementById("ga4_property").value,
+    reach: document.getElementById("reach").value,
+    goal: document.getElementById("goal").value,
+  };
+  const result = await window.sageoOperator.startThinAudit(fields);
+  if (!result.ok) {
+    renderErrors(newRunErrors, result.errors || ["Start failed"]);
+    return;
+  }
+  renderErrors(newRunWarnings, result.warnings || []);
+  selectedRunId = result.run_id;
+  await refreshSidebar(result.run_id);
+  await openProgress(result.run_id, result.warnings || []);
+});
+
+document.getElementById("new-run-btn").addEventListener("click", () => {
+  stopProgressWatch();
+  setStage("new-run");
+});
+document.getElementById("empty-new-run-btn").addEventListener("click", () => {
+  stopProgressWatch();
+  setStage("new-run");
+});
 document.getElementById("settings-btn").addEventListener("click", () => {
+  stopProgressWatch();
   fillRuntimeForm("settings_", currentConfig);
   setStage("settings");
+});
+goToReviewBtn.addEventListener("click", () => {
+  // Review stage ships in a later ticket; CTA is present for gate attention.
+  goToReviewBtn.textContent = goToReviewBtn.textContent.replace(
+    /^Go to Review/,
+    "Review (coming soon)"
+  );
 });
 
 boot();
