@@ -22,8 +22,9 @@ Contract lint fails shipped packs that lack a valid semver `metadata.version`.
 ### Added
 
 - Operator runtime bridge (`sageo.operator`): validate local checkout +
-  interpreter ready-check, and start thin_audit Runs from Property refs /
-  Reach / optional goal (hermetic Agent fakes; no Electron UI).
+  interpreter ready-check, start thin_audit Runs from Property refs / Reach /
+  optional goal, list Runs, Progress snapshots, active-run watch, and gate
+  resume with optional `operator_note` (hermetic Agent fakes; no Electron UI).
 - Optional `operator_note` on Orchestrator `resume` and Agent `resume_agent`
   gate Decisions (`inputs.operator_note` + rationale suffix when set).
 
