@@ -56,6 +56,7 @@ sageo/
 ├── orchestrator/    # Orchestrator contract + thin_audit routing
 ├── connectors/      # read-only MCP packs: gsc, ga4, crawl-serp
 ├── src/sageo/       # shared Python library (lint, runtimes, metrics, …)
+├── apps/            # operator-desktop Electron shell (wizard + app chrome)
 ├── runs/            # local run artifacts (gitignored contents)
 └── tests/           # goldens, e2e/national-audit, contract lint, …
 ```
